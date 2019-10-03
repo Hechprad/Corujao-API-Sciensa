@@ -8,7 +8,8 @@ import org.springframework.stereotype.Component;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 
-import io.swagger.model.Genre;
+import io.swagger.entity.GenreEntity;
+import io.swagger.entity.MovieEntity;
 
 @Component
 public class RespostasUtil {
@@ -24,16 +25,28 @@ public class RespostasUtil {
 		
 	}
 	
-	public ResponseEntity<Genre> getBadRequestGenre(String mensagem) {
-		return new ResponseEntity<Genre>(getNewHeaderWithMessage(mensagem), HttpStatus.BAD_REQUEST);
+	public ResponseEntity<GenreEntity> getBadRequestGenre(String mensagem) {
+		return new ResponseEntity<GenreEntity>(getNewHeaderWithMessage(mensagem), HttpStatus.BAD_REQUEST);
 	}
 	
-	public ResponseEntity<Genre> getErroInternoGenre(String mensagem) {
-		return new ResponseEntity<Genre>(getNewHeaderWithMessage(mensagem), HttpStatus.INTERNAL_SERVER_ERROR);
+	public ResponseEntity<GenreEntity> getInternalErrorGenre(String mensagem) {
+		return new ResponseEntity<GenreEntity>(getNewHeaderWithMessage(mensagem), HttpStatus.INTERNAL_SERVER_ERROR);
 	}
 
-	public ResponseEntity<List<Genre>> getBadRequestGenders(String mensagem) {
-		return new ResponseEntity<List<Genre>>(getNewHeaderWithMessage(mensagem), HttpStatus.BAD_REQUEST);
+	public ResponseEntity<List<GenreEntity>> getBadRequestGenders(String mensagem) {
+		return new ResponseEntity<List<GenreEntity>>(getNewHeaderWithMessage(mensagem), HttpStatus.BAD_REQUEST);
+	}
+
+	public ResponseEntity<MovieEntity> getBadRequestMovie(String mensagem) {
+		return new ResponseEntity<MovieEntity>(getNewHeaderWithMessage(mensagem), HttpStatus.BAD_REQUEST);
+	}
+
+	public ResponseEntity<MovieEntity> getInternalErrorMovie(String mensagem) {
+		return new ResponseEntity<MovieEntity>(getNewHeaderWithMessage(mensagem), HttpStatus.INTERNAL_SERVER_ERROR);
+	}
+	
+	public ResponseEntity<List<MovieEntity>> getBadRequestMovies(String mensagem) {
+		return new ResponseEntity<List<MovieEntity>>(getNewHeaderWithMessage(mensagem), HttpStatus.BAD_REQUEST);
 	}
 
 }

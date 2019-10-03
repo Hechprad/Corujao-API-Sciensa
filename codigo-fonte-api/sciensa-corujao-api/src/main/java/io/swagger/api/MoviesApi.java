@@ -5,23 +5,24 @@
  */
 package io.swagger.api;
 
-import io.swagger.model.Movie;
-import io.swagger.model.ResponseError;
-import io.swagger.annotations.*;
+import java.util.List;
+
+import javax.validation.Valid;
+
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RequestPart;
-import org.springframework.web.multipart.MultipartFile;
 
-import javax.validation.Valid;
-import javax.validation.constraints.*;
-import java.util.List;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
+import io.swagger.annotations.ApiResponse;
+import io.swagger.annotations.ApiResponses;
+import io.swagger.entity.MovieEntity;
+import io.swagger.model.ResponseError;
 @javax.annotation.Generated(value = "io.swagger.codegen.languages.SpringCodegen", date = "2019-10-02T14:53:20.805Z")
 
 @Api(value = "movies", description = "the movies API")
@@ -35,7 +36,7 @@ public interface MoviesApi {
     @RequestMapping(value = "/movies",
         produces = { "application/json" }, 
         method = RequestMethod.POST)
-    ResponseEntity<Object> addMovie(@ApiParam(value = "" ,required=true )  @Valid @RequestBody Movie movie);
+    ResponseEntity<MovieEntity> addMovie(@ApiParam(value = "" ,required=true )  @Valid @RequestBody MovieEntity movieEntity);
 
 
     @ApiOperation(value = "Detalhe de filme", nickname = "getMovie", notes = "", response = Object.class, tags={ "movies", })
@@ -46,7 +47,7 @@ public interface MoviesApi {
     @RequestMapping(value = "/movies/{movieId}",
         produces = { "application/json" }, 
         method = RequestMethod.GET)
-    ResponseEntity<Object> getMovie(@ApiParam(value = "",required=true) @PathVariable("movieId") Long movieId);
+    ResponseEntity<MovieEntity> getMovie(@ApiParam(value = "",required=true) @PathVariable("movieId") Long movieId);
 
 
     @ApiOperation(value = "Lista os filmes cinematográficos", nickname = "listMovies", notes = "", response = Object.class, tags={ "movies", })
@@ -57,7 +58,7 @@ public interface MoviesApi {
     @RequestMapping(value = "/movies",
         produces = { "application/json" }, 
         method = RequestMethod.GET)
-    ResponseEntity<Object> listMovies(@ApiParam(value = "Página da listagem a ser retornada", defaultValue = "1") @Valid @RequestParam(value = "page", required = false, defaultValue="1") Integer page,@ApiParam(value = "Tamanho da paginação a ser utilizada no request", defaultValue = "10") @Valid @RequestParam(value = "size", required = false, defaultValue="10") Integer size,@ApiParam(value = "Retorna itens cuja descrição se pareça com o valor informado") @Valid @RequestParam(value = "search", required = false) String search);
+    ResponseEntity<List<MovieEntity>> listMovies(@ApiParam(value = "Página da listagem a ser retornada", defaultValue = "1") @Valid @RequestParam(value = "page", required = false, defaultValue="1") Integer page,@ApiParam(value = "Tamanho da paginação a ser utilizada no request", defaultValue = "10") @Valid @RequestParam(value = "size", required = false, defaultValue="10") Integer size,@ApiParam(value = "Retorna itens cuja descrição se pareça com o valor informado") @Valid @RequestParam(value = "search", required = false) String search);
 
 
     @ApiOperation(value = "Remove um filme do catálogo", nickname = "removeMovie", notes = "", tags={ "movies", })
@@ -68,7 +69,7 @@ public interface MoviesApi {
     @RequestMapping(value = "/movies/{movieId}",
         produces = { "application/json" }, 
         method = RequestMethod.DELETE)
-    ResponseEntity<Void> removeMovie(@ApiParam(value = "",required=true) @PathVariable("movieId") Long movieId);
+    ResponseEntity<MovieEntity> removeMovie(@ApiParam(value = "",required=true) @PathVariable("movieId") Long movieId);
 
 
     @ApiOperation(value = "Atualização de filme", nickname = "updateMovie", notes = "", response = Object.class, tags={ "movies", })
@@ -80,6 +81,6 @@ public interface MoviesApi {
         produces = { "application/json" }, 
         consumes = { "application/json" },
         method = RequestMethod.PUT)
-    ResponseEntity<Object> updateMovie(@ApiParam(value = "",required=true) @PathVariable("movieId") Long movieId,@ApiParam(value = "" ,required=true )  @Valid @RequestBody Movie movie);
+    ResponseEntity<MovieEntity> updateMovie(@ApiParam(value = "",required=true) @PathVariable("movieId") Long movieId,@ApiParam(value = "" ,required=true )  @Valid @RequestBody MovieEntity movieEntity);
 
 }

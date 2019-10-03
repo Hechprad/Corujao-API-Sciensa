@@ -1,5 +1,6 @@
 package io.swagger.model;
 
+import java.util.List;
 import java.util.Objects;
 
 import javax.validation.Valid;
@@ -29,8 +30,20 @@ public class Genre   {
 
   @JsonProperty("updatedAt")
   private OffsetDateTime updatedAt = null;
+  
+  @JsonProperty("movies")
+  @Valid
+  private List<Movie> movies = null;
 
-  public Genre id(Long id) {
+  public List<Movie> getMovies() {
+	return movies;
+}
+
+public void setMovies(List<Movie> movies) {
+	this.movies = movies;
+}
+
+public Genre id(Long id) {
     this.id = id;
     return this;
   }

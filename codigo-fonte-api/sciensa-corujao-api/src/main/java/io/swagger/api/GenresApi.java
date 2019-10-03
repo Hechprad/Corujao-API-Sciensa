@@ -21,7 +21,7 @@ import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
-import io.swagger.model.Genre;
+import io.swagger.entity.GenreEntity;
 import io.swagger.model.ResponseError;
 @javax.annotation.Generated(value = "io.swagger.codegen.languages.SpringCodegen", date = "2019-10-02T14:53:20.805Z")
 
@@ -36,7 +36,7 @@ public interface GenresApi {
     @RequestMapping(value = "/genres",
         produces = { "application/json" }, 
         method = RequestMethod.POST)
-    ResponseEntity<Genre> addGenre(@ApiParam(value = "" ,required=true )  @Valid @RequestBody Genre genre);
+    ResponseEntity<GenreEntity> addGenre(@ApiParam(value = "" ,required=true )  @Valid @RequestBody GenreEntity genreEntity);
 
 
     @ApiOperation(value = "Detalhe de gênero cinematográfico", nickname = "getGenre", notes = "", response = Object.class, tags={ "genres", })
@@ -47,7 +47,7 @@ public interface GenresApi {
     @RequestMapping(value = "/genres/{genreId}",
         produces = { "application/json" }, 
         method = RequestMethod.GET)
-    ResponseEntity<Genre> getGenre(@ApiParam(value = "",required=true) @PathVariable("genreId") Long genreId);
+    ResponseEntity<GenreEntity> getGenre(@ApiParam(value = "",required=true) @PathVariable("genreId") Long genreId);
 
 
     @ApiOperation(value = "Lista os gêneros cinematográficos", nickname = "listGenres", notes = "", response = Object.class, tags={ "genres", })
@@ -58,7 +58,7 @@ public interface GenresApi {
     @RequestMapping(value = "/genres",
         produces = { "application/json" }, 
         method = RequestMethod.GET)
-    ResponseEntity<List<Genre>> listGenres(@ApiParam(value = "Página da listagem a ser retornada", defaultValue = "1") @Valid @RequestParam(value = "page", required = false, defaultValue="1") Integer page,@ApiParam(value = "Tamanho da paginação a ser utilizada no request", defaultValue = "10") @Valid @RequestParam(value = "size", required = false, defaultValue="10") Integer size,@ApiParam(value = "Retorna itens cuja descrição se pareça com o valor informado") @Valid @RequestParam(value = "search", required = false) String search);
+    ResponseEntity<List<GenreEntity>> listGenres(@ApiParam(value = "Página da listagem a ser retornada", defaultValue = "1") @Valid @RequestParam(value = "page", required = false, defaultValue="1") Integer page,@ApiParam(value = "Tamanho da paginação a ser utilizada no request", defaultValue = "10") @Valid @RequestParam(value = "size", required = false, defaultValue="10") Integer size,@ApiParam(value = "Retorna itens cuja descrição se pareça com o valor informado") @Valid @RequestParam(value = "search", required = false) String search);
 
 
     @ApiOperation(value = "Atualização de gênero cinematográfico", nickname = "updateGenre", notes = "", response = Object.class, tags={ "genres", })
@@ -70,6 +70,6 @@ public interface GenresApi {
         produces = { "application/json" }, 
         consumes = { "application/json" },
         method = RequestMethod.PUT)
-    ResponseEntity<Genre> updateGenre(@ApiParam(value = "",required=true) @PathVariable("genreId") Long genreId,@ApiParam(value = "" ,required=true )  @Valid @RequestBody Genre genre);
+    ResponseEntity<GenreEntity> updateGenre(@ApiParam(value = "",required=true) @PathVariable("genreId") Long genreId,@ApiParam(value = "" ,required=true )  @Valid @RequestBody GenreEntity genreEntity);
 
 }

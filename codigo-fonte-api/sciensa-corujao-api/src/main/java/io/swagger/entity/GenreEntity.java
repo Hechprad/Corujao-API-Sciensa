@@ -1,11 +1,14 @@
 package io.swagger.entity;
 
 import java.io.Serializable;
+import java.util.List;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.ManyToMany;
 import javax.persistence.Table;
 
 import org.threeten.bp.OffsetDateTime;
@@ -20,11 +23,17 @@ public class GenreEntity implements Serializable{
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 
+	@Column(nullable = false)
 	private String description;
 
+	@Column
 	private OffsetDateTime createdAt;
 
+	@Column
 	private OffsetDateTime updatedAt;
+	
+	@ManyToMany(mappedBy = "genres")
+	private List<MovieEntity> movies;
 
 	public Long getId() {
 		return id;
