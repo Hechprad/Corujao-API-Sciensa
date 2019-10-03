@@ -5,23 +5,24 @@
  */
 package io.swagger.api;
 
-import io.swagger.model.Genre;
-import io.swagger.model.ResponseError;
-import io.swagger.annotations.*;
+import java.util.List;
+
+import javax.validation.Valid;
+
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RequestPart;
-import org.springframework.web.multipart.MultipartFile;
 
-import javax.validation.Valid;
-import javax.validation.constraints.*;
-import java.util.List;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
+import io.swagger.annotations.ApiResponse;
+import io.swagger.annotations.ApiResponses;
+import io.swagger.model.Genre;
+import io.swagger.model.ResponseError;
 @javax.annotation.Generated(value = "io.swagger.codegen.languages.SpringCodegen", date = "2019-10-02T14:53:20.805Z")
 
 @Api(value = "genres", description = "the genres API")
@@ -35,7 +36,7 @@ public interface GenresApi {
     @RequestMapping(value = "/genres",
         produces = { "application/json" }, 
         method = RequestMethod.POST)
-    ResponseEntity<Object> addGenre(@ApiParam(value = "" ,required=true )  @Valid @RequestBody Genre genre);
+    ResponseEntity<Genre> addGenre(@ApiParam(value = "" ,required=true )  @Valid @RequestBody Genre genre);
 
 
     @ApiOperation(value = "Detalhe de gênero cinematográfico", nickname = "getGenre", notes = "", response = Object.class, tags={ "genres", })
@@ -46,7 +47,7 @@ public interface GenresApi {
     @RequestMapping(value = "/genres/{genreId}",
         produces = { "application/json" }, 
         method = RequestMethod.GET)
-    ResponseEntity<Object> getGenre(@ApiParam(value = "",required=true) @PathVariable("genreId") Long genreId);
+    ResponseEntity<Genre> getGenre(@ApiParam(value = "",required=true) @PathVariable("genreId") Long genreId);
 
 
     @ApiOperation(value = "Lista os gêneros cinematográficos", nickname = "listGenres", notes = "", response = Object.class, tags={ "genres", })
@@ -57,7 +58,7 @@ public interface GenresApi {
     @RequestMapping(value = "/genres",
         produces = { "application/json" }, 
         method = RequestMethod.GET)
-    ResponseEntity<Object> listGenres(@ApiParam(value = "Página da listagem a ser retornada", defaultValue = "1") @Valid @RequestParam(value = "page", required = false, defaultValue="1") Integer page,@ApiParam(value = "Tamanho da paginação a ser utilizada no request", defaultValue = "10") @Valid @RequestParam(value = "size", required = false, defaultValue="10") Integer size,@ApiParam(value = "Retorna itens cuja descrição se pareça com o valor informado") @Valid @RequestParam(value = "search", required = false) String search);
+    ResponseEntity<List<Genre>> listGenres(@ApiParam(value = "Página da listagem a ser retornada", defaultValue = "1") @Valid @RequestParam(value = "page", required = false, defaultValue="1") Integer page,@ApiParam(value = "Tamanho da paginação a ser utilizada no request", defaultValue = "10") @Valid @RequestParam(value = "size", required = false, defaultValue="10") Integer size,@ApiParam(value = "Retorna itens cuja descrição se pareça com o valor informado") @Valid @RequestParam(value = "search", required = false) String search);
 
 
     @ApiOperation(value = "Atualização de gênero cinematográfico", nickname = "updateGenre", notes = "", response = Object.class, tags={ "genres", })
@@ -69,6 +70,6 @@ public interface GenresApi {
         produces = { "application/json" }, 
         consumes = { "application/json" },
         method = RequestMethod.PUT)
-    ResponseEntity<Object> updateGenre(@ApiParam(value = "",required=true) @PathVariable("genreId") Long genreId,@ApiParam(value = "" ,required=true )  @Valid @RequestBody Genre genre);
+    ResponseEntity<Genre> updateGenre(@ApiParam(value = "",required=true) @PathVariable("genreId") Long genreId,@ApiParam(value = "" ,required=true )  @Valid @RequestBody Genre genre);
 
 }
