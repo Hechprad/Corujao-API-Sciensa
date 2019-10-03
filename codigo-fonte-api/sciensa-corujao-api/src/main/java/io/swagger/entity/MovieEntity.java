@@ -37,11 +37,18 @@ public class MovieEntity implements Serializable {
 				inverseJoinColumns={@JoinColumn(name="genre_id")})
 	private List<GenreEntity> genres;
 
-//	@ManyToMany
-//	private Artist director;
+	@ManyToMany
+	@JoinTable(	name="movie_has_artist", 
+				joinColumns={@JoinColumn(name="movie_id")}, 
+				inverseJoinColumns={@JoinColumn(name="artist_id")})
+	private List<ArtistEntity> cast;
 
-//	@ManyToMany
-//	private Set<Artist> cast;
+	@ManyToMany
+	@JoinTable(	name="movie_has_director", 
+				joinColumns={@JoinColumn(name="movie_id")}, 
+				inverseJoinColumns={@JoinColumn(name="director_id")})
+	private List<ArtistEntity> directors;
+
 
 	@Column
 	private OffsetDateTime createdAt = null;
@@ -73,14 +80,6 @@ public class MovieEntity implements Serializable {
 		this.releaseYear = releaseYear;
 	}
 
-//	public MovieEntity setGenre(GenreEntity genresItem) {
-//		if (this.genres == null) {
-//			this.genres = new ArrayList<GenreEntity>();
-//		}
-//		this.genres.add(genresItem);
-//		return this;
-//	}
-
 	public List<GenreEntity> getGenres() {
 		return genres;
 	}
@@ -97,19 +96,11 @@ public class MovieEntity implements Serializable {
 //		this.director = director;
 //	}
 
-//	public MovieEntity setCastItem(Artist castItem) {
-//		if (this.cast == null) {
-//			this.cast = (Set<Artist>) new ArrayList<Artist>();
-//		}
-//		this.cast.add(castItem);
-//		return this;
-//	}
-//
-//	public Set<Artist> getCast() {
+//	public List<Artist> getCast() {
 //		return cast;
 //	}
 //
-//	public void setCast(Set<Artist> cast) {
+//	public void setCast(List<Artist> cast) {
 //		this.cast = cast;
 //	}
 

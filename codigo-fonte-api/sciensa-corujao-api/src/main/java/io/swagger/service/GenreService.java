@@ -75,21 +75,21 @@ public class GenreService {
 
 	}
 
-	public ResponseEntity<GenreEntity> update(Long genreId, GenreEntity genre) {
-		if (isNotValidGenre(genre)) {
+	public ResponseEntity<GenreEntity> update(Long genreId, GenreEntity genreEntity) {
+		if (isNotValidGenre(genreEntity)) {
 			return respostasUtil.getBadRequestGenre(MENSAGEM_DADOS_INVALIDOS);
 		}
-		return new ResponseEntity<GenreEntity>(updateGenre(genreId, genre), HttpStatus.CREATED);
+		return new ResponseEntity<GenreEntity>(updateGenre(genreId, genreEntity), HttpStatus.CREATED);
 	}
 
 	private GenreEntity updateGenre(Long genreId, GenreEntity genre) {
-		GenreEntity genreEntity = repository.findOne(genreId);
-		genreEntity.setDescription(genre.getDescription());
-		genreEntity.setUpdatedAt(OffsetDateTime.now());
+		GenreEntity genreEntityWillUpdate = repository.findOne(genreId);
+		genreEntityWillUpdate.setDescription(genre.getDescription());
+		genreEntityWillUpdate.setUpdatedAt(OffsetDateTime.now());
 
-		repository.save(genreEntity);
+		repository.save(genreEntityWillUpdate);
 
-		return genreEntity;
+		return genreEntityWillUpdate;
 	}
 
 }

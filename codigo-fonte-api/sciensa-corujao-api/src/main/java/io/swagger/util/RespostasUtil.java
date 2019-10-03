@@ -8,6 +8,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 
+import io.swagger.entity.ArtistEntity;
 import io.swagger.entity.GenreEntity;
 import io.swagger.entity.MovieEntity;
 
@@ -47,6 +48,26 @@ public class RespostasUtil {
 	
 	public ResponseEntity<List<MovieEntity>> getBadRequestMovies(String mensagem) {
 		return new ResponseEntity<List<MovieEntity>>(getNewHeaderWithMessage(mensagem), HttpStatus.BAD_REQUEST);
+	}
+
+	public ResponseEntity<MovieEntity> getNoContentMovie(String mensagem) {
+		return new ResponseEntity<MovieEntity>(getNewHeaderWithMessage(mensagem), HttpStatus.NO_CONTENT);
+	}
+	
+	public ResponseEntity<ArtistEntity> getBadRequestArtist(String mensagem) {
+		return new ResponseEntity<ArtistEntity>(getNewHeaderWithMessage(mensagem), HttpStatus.BAD_REQUEST);
+	}
+	
+	public ResponseEntity<ArtistEntity> getInternalErrorArtist(String mensagem) {
+		return new ResponseEntity<ArtistEntity>(getNewHeaderWithMessage(mensagem), HttpStatus.INTERNAL_SERVER_ERROR);
+	}
+
+	public ResponseEntity<List<ArtistEntity>> getBadRequestArtists(String mensagem) {
+		return new ResponseEntity<List<ArtistEntity>>(getNewHeaderWithMessage(mensagem), HttpStatus.BAD_REQUEST);
+	}
+	
+	public ResponseEntity<ArtistEntity> getNoContentArtist(String mensagem) {
+		return new ResponseEntity<ArtistEntity>(getNewHeaderWithMessage(mensagem), HttpStatus.NO_CONTENT);
 	}
 
 }
