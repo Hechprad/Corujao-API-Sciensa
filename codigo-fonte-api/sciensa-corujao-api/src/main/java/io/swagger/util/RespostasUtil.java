@@ -78,5 +78,9 @@ public class RespostasUtil {
 	public ResponseEntity<ArtistEntity> getNoContentArtist(String mensagem) {
 		return new ResponseEntity<ArtistEntity>(getNewHeaderWithMessage(mensagem), HttpStatus.NO_CONTENT);
 	}
+	
+	public ResponseEntity<Page<ArtistEntity>> getBadRequestArt(String mensagem) {
+		return new ResponseEntity<Page<ArtistEntity>>(getNewHeaderWithMessage(mensagem), HttpStatus.BAD_REQUEST);
+	}
 
 }

@@ -1,8 +1,12 @@
 package io.swagger.service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -71,15 +75,15 @@ public class ArtistService {
 		return new ResponseEntity<ArtistEntity>(artistEntity, HttpStatus.OK);
 	}
 
-	public ResponseEntity<List<ArtistEntity>> findAll() {
+	public ResponseEntity<Page<ArtistEntity>> findAll(Pageable pageable) {
 
-		Iterable<ArtistEntity> artistEntity = repository.findAll();
+		Page<ArtistEntity> artistEntity = repository.findAll(pageable);
 
 		if (artistEntity == null) {
-			return respostasUtil.getBadRequestArtists(MENSAGEM_FAIL);
+			return respostasUtil.getBadRequestArt(MENSAGEM_FAIL);
 		}
 
-		return new ResponseEntity<List<ArtistEntity>>((List<ArtistEntity>) artistEntity, HttpStatus.OK);
+		return new ResponseEntity<Page<ArtistEntity>>(artistEntity, HttpStatus.OK);
 
 	}
 
@@ -108,5 +112,20 @@ public class ArtistService {
 		List<MovieEntity> movies = (List<MovieEntity>) movieEntity;
 		
 		return movies;
+	}
+
+	public ResponseEntity<Page<ArtistEntity>> searchName(String search, Pageable pageable) {
+		
+		Iterable<ArtistEntity> artists = repository.findAll();
+		List<ArtistEntity> artistsFiltrados = new ArrayList<ArtistEntity>();
+		
+		artists.forEach(artist -> {
+			if(artist.getFirstName().toLowerCase().contains(search.toLowerCase())) artistsFiltrados.add(artist);
+		});
+		
+		// convertento List para page
+		final Page<ArtistEntity> page = new PageImpl<>(artistsFiltrados);
+		
+		return new ResponseEntity<Page<ArtistEntity>>(page, HttpStatus.OK);
 	}
 }
