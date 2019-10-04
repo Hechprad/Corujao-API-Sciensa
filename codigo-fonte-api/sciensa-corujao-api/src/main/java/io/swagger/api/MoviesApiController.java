@@ -1,5 +1,8 @@
 package io.swagger.api;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -54,7 +57,11 @@ public class MoviesApiController implements MoviesApi {
 			@ApiParam(value = "Tamanho da paginação a ser utilizada no request", defaultValue = "10") @Valid @RequestParam(value = "size", required = false, defaultValue = "10") Integer size,
 			@ApiParam(value = "Retorna itens cuja descrição se pareça com o valor informado") @Valid @RequestParam(value = "search", required = false) String search, Pageable pageable) {
 		try {
-			return movieService.findAll(pageable);
+			if(search != null) {
+				return movieService.searchTitle(search, pageable);
+			}
+			return movieService.findAll(pageable);				
+
 		} catch (Exception e) {
 			return respostasUtil.getBadRequestMovies(MovieService.MENSAGEM_FAIL);
 		}

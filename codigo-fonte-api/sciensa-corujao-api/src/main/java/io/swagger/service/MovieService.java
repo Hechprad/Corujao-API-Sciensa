@@ -1,7 +1,11 @@
 package io.swagger.service;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -104,6 +108,21 @@ public class MovieService {
 	public ResponseEntity<MovieEntity> delete(Long movieId) {
 		repository.delete(movieId);
 		return respostasUtil.getNoContentMovie(SEM_CONTEUDO);
+	}
+
+	public ResponseEntity<Page<MovieEntity>> searchTitle(String search, Pageable pageable) {
+			
+		Iterable<MovieEntity> movies = repository.findAll();
+		List<MovieEntity> moviesFiltrados = new ArrayList<MovieEntity>();
+		
+		movies.forEach(movie -> {
+			if(movie.getTitle().toLowerCase().contains(search.toLowerCase())) moviesFiltrados.add(movie);
+		});
+		
+		// convertento List para page
+		final Page<MovieEntity> page = new PageImpl<>(moviesFiltrados);
+		
+		return new ResponseEntity<Page<MovieEntity>>(page, HttpStatus.OK);
 	}
 
 }
