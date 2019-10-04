@@ -14,6 +14,7 @@ import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
+import org.hibernate.validator.constraints.NotEmpty;
 import org.threeten.bp.OffsetDateTime;
 
 @Entity
@@ -26,6 +27,7 @@ public class MovieEntity implements Serializable {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id = null;
 
+	@NotEmpty
 	@Column(nullable = false)
 	private String title;
 

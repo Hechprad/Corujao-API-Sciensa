@@ -9,6 +9,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
+import org.hibernate.validator.constraints.NotEmpty;
 import org.threeten.bp.LocalDate;
 import org.threeten.bp.OffsetDateTime;
 
@@ -22,9 +23,11 @@ public class ArtistEntity implements Serializable {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id = null;
 
+	@NotEmpty
 	@Column(nullable = false)
 	private String firstName = null;
 
+	@NotEmpty
 	@Column(nullable = false)
 	private String lastName = null;
 
