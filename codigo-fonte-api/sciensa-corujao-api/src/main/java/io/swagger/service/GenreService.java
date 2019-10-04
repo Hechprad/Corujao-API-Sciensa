@@ -34,7 +34,7 @@ public class GenreService {
 
 	public ResponseEntity<GenreEntity> getGenreById(Long genreId) {
 		verifyIfGenreExists(genreId);
-		return new ResponseEntity<GenreEntity>(repository.findGenreById(genreId), HttpStatus.OK);
+		return new ResponseEntity<GenreEntity>(repository.findOne(genreId), HttpStatus.OK);
 	}
 
 	public ResponseEntity<Page<GenreEntity>> findAll(Pageable pageable) {
@@ -97,7 +97,7 @@ public class GenreService {
 
 	// Realiza a atualização do Genre
 	private GenreEntity update(Long genreId, GenreEntity genreEntity) {
-		GenreEntity genreEntityWillUpdate = repository.findGenreById(genreId);
+		GenreEntity genreEntityWillUpdate = repository.findOne(genreId);
 		genreEntityWillUpdate.setDescription(genreEntity.getDescription());
 		genreEntityWillUpdate.setUpdatedAt(OffsetDateTime.now());
 
@@ -112,7 +112,7 @@ public class GenreService {
 	
 	// Verifica de se o Gênero existe pelo ID
 	private void verifyIfGenreExists(Long id) {
-		if (repository.findGenreById(id) == null) {
+		if (repository.findOne(id) == null) {
 			throw new ResourceNotFoundException("Genre not found for ID: " + id);
 		}
 	}

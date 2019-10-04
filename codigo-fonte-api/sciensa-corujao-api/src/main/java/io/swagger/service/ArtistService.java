@@ -40,7 +40,7 @@ public class ArtistService {
 
 	public ResponseEntity<ArtistEntity> getArtistById(Long artistId) {
 		verifyIfArtistExists(artistId);
-		return new ResponseEntity<ArtistEntity>(repository.findArtistById(artistId), HttpStatus.OK);
+		return new ResponseEntity<ArtistEntity>(repository.findOne(artistId), HttpStatus.OK);
 	}
 
 	public ResponseEntity<Page<ArtistEntity>> findAll(Pageable pageable) {
@@ -108,7 +108,7 @@ public class ArtistService {
 	
 	// Realiza a atualização do Artist
 	private ArtistEntity update(Long artistId, ArtistEntity artist) {
-		ArtistEntity artistEntityWillUpdate = repository.findArtistById(artistId);
+		ArtistEntity artistEntityWillUpdate = repository.findOne(artistId);
 		artistEntityWillUpdate.setFirstName(artist.getFirstName());
 		artistEntityWillUpdate.setLastName(artist.getLastName());
 		artistEntityWillUpdate.setDateOfBirth(artist.getDateOfBirth());
@@ -146,7 +146,7 @@ public class ArtistService {
 
 	// Verifica de se o Artista existe pelo ID
 	private void verifyIfArtistExists(Long id) {
-		if (repository.findArtistById(id) == null) {
+		if (repository.findOne(id) == null) {
 			throw new ResourceNotFoundException("Artist not found for ID: " + id);
 		}
 	}

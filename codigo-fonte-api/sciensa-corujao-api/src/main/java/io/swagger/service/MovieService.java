@@ -15,6 +15,7 @@ import org.threeten.bp.OffsetDateTime;
 
 import io.swagger.entity.MovieEntity;
 import io.swagger.repository.MovieRepository;
+import io.swagger.util.ResourceNotFoundException;
 import io.swagger.util.RespostasUtil;
 
 @Service
@@ -33,43 +34,27 @@ public class MovieService {
 	@Autowired
 	private RespostasUtil respostasUtil;
 
-	// Verifica se o título e o ano de lançamento estão vazios
-	public boolean isNotValidMovie(MovieEntity movieEntity) {
-		if (StringUtils.isEmpty(movieEntity.getTitle())
-				|| StringUtils.isEmpty(String.valueOf(movieEntity.getReleaseYear()))) {
-			return true;
-		}
-		return false;
-	}
-
-	// Cadastra novo MovieEntity
-	private MovieEntity cadastraNovoMovie(MovieEntity movieEntity) {
-
-		movieEntity.setCreatedAt(OffsetDateTime.now());
-		movieEntity.setUpdatedAt(OffsetDateTime.now());
-		movieEntity = repository.save(movieEntity);
-
-		return movieEntity;
-
-	}
-
+	/* 
+	 * ********** Métodos chamados pelo GenreController **********
+	 */
 	public ResponseEntity<MovieEntity> save(MovieEntity movieEntity) {
-		if (isNotValidMovie(movieEntity)) {
-			return respostasUtil.getBadRequestMovie(MENSAGEM_DADOS_INVALIDOS);
-		}
 		return new ResponseEntity<MovieEntity>(cadastraNovoMovie(movieEntity), HttpStatus.CREATED);
 	}
-
+	
 	public ResponseEntity<MovieEntity> getMovieById(Long movieId) {
-
-		MovieEntity movieEntity = repository.findMovieById(movieId);
-
-		if (movieEntity == null) {
-			return respostasUtil.getBadRequestMovie(MENSAGEM_DADOS_INVALIDOS);
-		}
-		return new ResponseEntity<MovieEntity>(movieEntity, HttpStatus.OK);
+		verifyIfMovieExists(movieId);
+		return new ResponseEntity<MovieEntity>(repository.findOne(movieId), HttpStatus.OK);
 	}
-
+	
+	
+	public ResponseEntity<MovieEntity> delete(Long movieId) {
+		repository.delete(movieId);
+		return respostasUtil.getNoContentMovie(SEM_CONTEUDO);
+	}
+	
+	
+	
+	
 	public ResponseEntity<Page<MovieEntity>> findAll(Pageable pageable) {
 
 		Page<MovieEntity> movieEntity = repository.findAll(pageable);
@@ -81,6 +66,55 @@ public class MovieService {
 		return new ResponseEntity<Page<MovieEntity>>(movieEntity, HttpStatus.OK);
 
 	}
+	
+	/* 
+	 * ********* Métodos auxiliares *********
+	 */
+	
+	// Cadastra novo MovieEntity
+	private MovieEntity cadastraNovoMovie(MovieEntity movieEntity) {
+		movieEntity.setCreatedAt(OffsetDateTime.now());
+		movieEntity.setUpdatedAt(OffsetDateTime.now());
+		movieEntity = repository.save(movieEntity);
+
+		//Verifica se o Movie foi realmente cadastrado
+		verifyIfMovieExists(movieEntity.getId());
+		
+		return movieEntity;
+	}
+	
+	
+	
+	/* 
+	 * ********* Métodos de Validação *********
+	 */
+	
+	// Verifica de se o Filme existe pelo ID
+	private void verifyIfMovieExists(Long id) {
+		if (repository.findOne(id) == null) {
+			throw new ResourceNotFoundException("Movie not found for ID: " + id);
+		}
+	}
+
+	
+	
+	
+	// Verifica se o título e o ano de lançamento estão vazios
+	public boolean isNotValidMovie(MovieEntity movieEntity) {
+		if (StringUtils.isEmpty(movieEntity.getTitle())
+				|| StringUtils.isEmpty(String.valueOf(movieEntity.getReleaseYear()))) {
+			return true;
+		}
+		return false;
+	}
+
+	
+
+	
+
+	
+
+	
 
 	public ResponseEntity<MovieEntity> update(Long movieId, MovieEntity movieEntity) {
 		
@@ -93,7 +127,7 @@ public class MovieService {
 
 	private MovieEntity updateMovie(Long movieId, MovieEntity movieEntity) {
 		
-		MovieEntity movieEntityWillUpdate = repository.findMovieById(movieId);
+		MovieEntity movieEntityWillUpdate = repository.findOne(movieId);
 		
 		movieEntityWillUpdate.setTitle(movieEntity.getTitle());
 		movieEntityWillUpdate.setReleaseYear(movieEntity.getReleaseYear());
@@ -105,10 +139,7 @@ public class MovieService {
 		return movieEntityWillUpdate;
 	}
 
-	public ResponseEntity<MovieEntity> delete(Long movieId) {
-		repository.delete(movieId);
-		return respostasUtil.getNoContentMovie(SEM_CONTEUDO);
-	}
+	
 
 	public ResponseEntity<Page<MovieEntity>> searchTitle(String search, Pageable pageable) {
 			
