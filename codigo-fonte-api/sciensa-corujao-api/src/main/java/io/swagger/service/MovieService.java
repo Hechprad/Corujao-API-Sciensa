@@ -1,8 +1,8 @@
 package io.swagger.service;
 
-import java.util.List;
-
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -66,15 +66,15 @@ public class MovieService {
 		return new ResponseEntity<MovieEntity>(movieEntity, HttpStatus.OK);
 	}
 
-	public ResponseEntity<List<MovieEntity>> findAll() {
+	public ResponseEntity<Page<MovieEntity>> findAll(Pageable pageable) {
 
-		Iterable<MovieEntity> movieEntity = repository.findAll();
+		Page<MovieEntity> movieEntity = repository.findAll(pageable);
 
 		if (movieEntity == null) {
 			return respostasUtil.getBadRequestMovies(MENSAGEM_FAIL);
 		}
 
-		return new ResponseEntity<List<MovieEntity>>((List<MovieEntity>) movieEntity, HttpStatus.OK);
+		return new ResponseEntity<Page<MovieEntity>>(movieEntity, HttpStatus.OK);
 
 	}
 

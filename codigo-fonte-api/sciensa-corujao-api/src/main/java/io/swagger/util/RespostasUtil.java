@@ -2,6 +2,7 @@ package io.swagger.util;
 
 import java.util.List;
 
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
@@ -46,7 +47,11 @@ public class RespostasUtil {
 		return new ResponseEntity<MovieEntity>(getNewHeaderWithMessage(mensagem), HttpStatus.INTERNAL_SERVER_ERROR);
 	}
 	
-	public ResponseEntity<List<MovieEntity>> getBadRequestMovies(String mensagem) {
+	public ResponseEntity<Page<MovieEntity>> getBadRequestMovies(String mensagem) {
+		return new ResponseEntity<Page<MovieEntity>>(getNewHeaderWithMessage(mensagem), HttpStatus.BAD_REQUEST);
+	}
+	
+	public ResponseEntity<List<MovieEntity>> getBadRequestMov(String mensagem) {
 		return new ResponseEntity<List<MovieEntity>>(getNewHeaderWithMessage(mensagem), HttpStatus.BAD_REQUEST);
 	}
 

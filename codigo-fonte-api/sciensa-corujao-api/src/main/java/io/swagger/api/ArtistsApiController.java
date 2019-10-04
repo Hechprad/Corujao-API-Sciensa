@@ -69,7 +69,7 @@ public class ArtistsApiController implements ArtistsApi {
 		try {
 			return new ResponseEntity<List<MovieEntity>>(filmography, HttpStatus.OK);
 		} catch (Exception e) {
-			return respostasUtil.getBadRequestMovies(ArtistService.MENSAGEM_DADOS_INVALIDOS);
+			return respostasUtil.getBadRequestMov(ArtistService.MENSAGEM_DADOS_INVALIDOS);
 		}
 	}
 
