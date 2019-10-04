@@ -1,8 +1,12 @@
 package io.swagger.service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -63,15 +67,15 @@ public class GenreService {
 		return new ResponseEntity<GenreEntity>(genreEntity, HttpStatus.OK);
 	}
 
-	public ResponseEntity<List<GenreEntity>> findAll() {
+	public ResponseEntity<Page<GenreEntity>> findAll(Pageable pageable) {
 
-		Iterable<GenreEntity> genreEntity = repository.findAll();
+		Page<GenreEntity> genreEntity = repository.findAll(pageable);
 
 		if (genreEntity == null) {
-			return respostasUtil.getBadRequestGenders(MENSAGEM_FAIL);
+			return respostasUtil.getBadRequestGen(MENSAGEM_FAIL);
 		}
 
-		return new ResponseEntity<List<GenreEntity>>((List<GenreEntity>) genreEntity, HttpStatus.OK);
+		return new ResponseEntity<Page<GenreEntity>>(genreEntity, HttpStatus.OK);
 
 	}
 
@@ -92,4 +96,19 @@ public class GenreService {
 		return genreEntityWillUpdate;
 	}
 
+	public ResponseEntity<Page<GenreEntity>> searchDescription(String search, Pageable pageable) {
+		
+		Iterable<GenreEntity> genres = repository.findAll();
+		List<GenreEntity> genresFiltrados = new ArrayList<GenreEntity>();
+		
+		genres.forEach(genre -> {
+			if(genre.getDescription().toLowerCase().contains(search.toLowerCase())) genresFiltrados.add(genre);
+		});
+		
+		// convertento List para page
+		final Page<GenreEntity> page = new PageImpl<>(genresFiltrados);
+		
+		return new ResponseEntity<Page<GenreEntity>>(page, HttpStatus.OK);
+	}
+	
 }

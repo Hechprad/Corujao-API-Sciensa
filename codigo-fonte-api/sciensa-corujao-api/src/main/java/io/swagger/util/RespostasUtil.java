@@ -35,8 +35,12 @@ public class RespostasUtil {
 		return new ResponseEntity<GenreEntity>(getNewHeaderWithMessage(mensagem), HttpStatus.INTERNAL_SERVER_ERROR);
 	}
 
-	public ResponseEntity<List<GenreEntity>> getBadRequestGenders(String mensagem) {
+	public ResponseEntity<List<GenreEntity>> getBadRequestGenres(String mensagem) {
 		return new ResponseEntity<List<GenreEntity>>(getNewHeaderWithMessage(mensagem), HttpStatus.BAD_REQUEST);
+	}
+	
+	public ResponseEntity<Page<GenreEntity>> getBadRequestGen(String mensagem) {
+		return new ResponseEntity<Page<GenreEntity>>(getNewHeaderWithMessage(mensagem), HttpStatus.BAD_REQUEST);
 	}
 
 	public ResponseEntity<MovieEntity> getBadRequestMovie(String mensagem) {
