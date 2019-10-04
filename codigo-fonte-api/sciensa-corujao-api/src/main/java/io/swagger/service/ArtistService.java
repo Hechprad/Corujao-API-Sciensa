@@ -25,7 +25,7 @@ public class ArtistService {
 	// Mensagens para o header
 	public static final String MENSAGEM_DADOS_INVALIDOS = "Artista - Parâmetros invalidos - client side";
 
-	public static final String MENSAGEM_FAIL = "Artistass não encontrados";
+	public static final String MENSAGEM_FAIL = "Artistas não encontrados";
 
 	// camada para conversar com o DB
 	@Autowired
@@ -128,4 +128,19 @@ public class ArtistService {
 		
 		return new ResponseEntity<Page<ArtistEntity>>(page, HttpStatus.OK);
 	}
+
+	public ResponseEntity<List<MovieEntity>> getFilmography(Long artistId) {
+		
+		List<MovieEntity> movies = getMovieList();
+		List<MovieEntity> filmography = new ArrayList<MovieEntity>();
+		
+		movies.forEach(movie -> 
+			movie.getCast().forEach(artist -> {
+				if(artist.getId() == artistId)filmography.add(movie);
+			})		
+		);
+		return new ResponseEntity<List<MovieEntity>>(filmography, HttpStatus.OK);
+	}
+	
+	
 }
