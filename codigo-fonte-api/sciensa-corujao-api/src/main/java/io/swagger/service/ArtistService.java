@@ -17,15 +17,11 @@ import io.swagger.entity.ArtistEntity;
 import io.swagger.entity.MovieEntity;
 import io.swagger.repository.ArtistRepository;
 import io.swagger.repository.MovieRepository;
+import io.swagger.util.ResourceNoContentException;
 import io.swagger.util.ResourceNotFoundException;
 
 @Service
 public class ArtistService {
-
-	// Mensagens para o header
-	public static final String MENSAGEM_DADOS_INVALIDOS = "Artista - Parâmetros invalidos - client side";
-
-	public static final String MENSAGEM_FAIL = "Artistas não encontrados";
 
 	// camada para conversar com o DB
 	@Autowired
@@ -47,11 +43,6 @@ public class ArtistService {
 		return new ResponseEntity<ArtistEntity>(repository.findArtistById(artistId), HttpStatus.OK);
 	}
 
-	public ResponseEntity<List<MovieEntity>> getFilmography(Long artistId) {
-		verifyIfArtistExists(artistId);
-		return new ResponseEntity<List<MovieEntity>>(buscaFilmesDoArtista(artistId), HttpStatus.OK);
-	}
-	
 	public ResponseEntity<Page<ArtistEntity>> findAll(Pageable pageable) {
 		return new ResponseEntity<Page<ArtistEntity>>(buscaTodosArtistas(pageable), HttpStatus.OK);
 	}
@@ -63,6 +54,11 @@ public class ArtistService {
 	public ResponseEntity<ArtistEntity> updateArtist(Long artistId, ArtistEntity artistEntity) {
 		verifyIfArtistExists(artistId);
 		return new ResponseEntity<ArtistEntity>(update(artistId, artistEntity), HttpStatus.CREATED);
+	}
+	
+	public ResponseEntity<List<MovieEntity>> getFilmography(Long artistId) {
+		verifyIfArtistExists(artistId);
+		return new ResponseEntity<List<MovieEntity>>(buscaFilmesDoArtista(artistId), HttpStatus.OK);
 	}
 
 	/* 
@@ -81,38 +77,17 @@ public class ArtistService {
 		return artistEntity;
 	}
 
-	// Busca filmes que tenham o Artist no cast
-	private List<MovieEntity> buscaFilmesDoArtista(Long artistId) {
-		List<MovieEntity> movies = getAllMovies();
-		List<MovieEntity> filmography = new ArrayList<MovieEntity>();
-
-		movies.forEach(movie -> movie.getCast().forEach(artist -> {
-			if (artist.getId() == artistId)
-				filmography.add(movie);
-		}));
-		return filmography;
-	}
-	
-	// Busca a lista com todos os filmes cadastrados
-	private List<MovieEntity> getAllMovies() {
-		Iterable<MovieEntity> movieEntity = movieRepository.findAll();
-		List<MovieEntity> movies = (List<MovieEntity>) movieEntity;
-
-		return movies;
-	}
-	
 	// Busca todos os artistas cadastrados
 	private Page<ArtistEntity> buscaTodosArtistas(Pageable pageable) {
 		Page<ArtistEntity> artistEntity = repository.findAll(pageable);
 		verifyIfPageIsNull(artistEntity);
-			return artistEntity;
+		return artistEntity;
 	}
 	
 	// Busca Artist pelo FirstName
 	private Page<ArtistEntity> buscaArtistPeloNome(String search) {
 		Iterable<ArtistEntity> artists = repository.findAll();
 		List<ArtistEntity> artistsFiltrados = new ArrayList<ArtistEntity>();
-		
 		
 		artists.forEach(artist -> {
 			if (removeAcento(artist.getFirstName().toLowerCase()).contains(removeAcento(search.toLowerCase()))) 
@@ -125,7 +100,7 @@ public class ArtistService {
 	}
 	
 	// Remove acento
-	public static String removeAcento(String str) {
+	private static String removeAcento(String str) {
 	    str = Normalizer.normalize(str, Normalizer.Form.NFD);
 	    str = str.replaceAll("[^\\p{ASCII}]", "");
 	    return str;
@@ -144,6 +119,27 @@ public class ArtistService {
 		return artistEntityWillUpdate;
 	}
 	
+	// Busca filmes que tenham o Artist no cast
+	private List<MovieEntity> buscaFilmesDoArtista(Long artistId) {
+		List<MovieEntity> movies = getAllMovies();
+		verifyIfMoviesListIsVoid(movies);
+		List<MovieEntity> filmography = new ArrayList<MovieEntity>();
+
+		movies.forEach(movie -> movie.getCast().forEach(artist -> {
+			if (artist.getId() == artistId)
+				filmography.add(movie);
+		}));
+		return filmography;
+	}
+	
+	// Busca a lista com todos os filmes cadastrados
+	private List<MovieEntity> getAllMovies() {
+		Iterable<MovieEntity> movieEntity = movieRepository.findAll();
+		List<MovieEntity> movies = (List<MovieEntity>) movieEntity;
+
+		return movies;
+	}
+	
 	/* 
 	 * ********* Métodos de Validação *********
 	 */
@@ -155,10 +151,17 @@ public class ArtistService {
 		}
 	}
 	
+	// Verifica se o retorno do tipo page é null na busca de todos os artistas
 	private void verifyIfPageIsNull(Page<ArtistEntity> artistEntity) {
 		if (artistEntity == null) {	
 			throw new ResourceNotFoundException("Artists not found");
 		}
-		
+	}
+
+	// Verifica de se o Artista existe pelo ID
+	private void verifyIfMoviesListIsVoid(List<MovieEntity> movies) {
+		if (movies.size() <= 0) {
+			throw new ResourceNoContentException("Empty filmography to this Artist.");
+		}
 	}
 }

@@ -38,11 +38,6 @@ public class ArtistsApiController implements ArtistsApi {
 		return artistService.getArtistById(artistId);
 	}
 
-	public ResponseEntity<List<MovieEntity>> getArtistFilmography(
-			@ApiParam(value = "", required = true) @PathVariable("artistId") Long artistId) {
-		return artistService.getFilmography(artistId);
-	}
-
 	public ResponseEntity<Page<ArtistEntity>> listArtists(
 			@ApiParam(value = "Página da listagem a ser retornada", defaultValue = "1") @Valid @RequestParam(value = "page", required = false, defaultValue = "1") Integer page,
 			@ApiParam(value = "Tamanho da paginação a ser utilizada no request", defaultValue = "10") @Valid @RequestParam(value = "size", required = false, defaultValue = "10") Integer size,
@@ -58,4 +53,9 @@ public class ArtistsApiController implements ArtistsApi {
 		return artistService.updateArtist(artistId, artistEntity);
 	}
 
+	public ResponseEntity<List<MovieEntity>> getArtistFilmography(
+			@ApiParam(value = "", required = true) @PathVariable("artistId") Long artistId) {
+		return artistService.getFilmography(artistId);
+	}
+	
 }

@@ -1,5 +1,6 @@
 package io.swagger.service;
 
+import java.text.Normalizer;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -10,105 +11,117 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import org.springframework.util.StringUtils;
 import org.threeten.bp.OffsetDateTime;
 
 import io.swagger.entity.GenreEntity;
 import io.swagger.repository.GenreRepository;
-import io.swagger.util.RespostasUtil;
+import io.swagger.util.ResourceNotFoundException;
 
 @Service
 public class GenreService {
-
-	// Mensagens para o header
-	public static final String MENSAGEM_DADOS_INVALIDOS = "Gênero - Parâmetros invalidos - client side";
-
-	public static final String MENSAGEM_FAIL = "Gêneros não encontrados";
 
 	// camada para conversar com o DB
 	@Autowired
 	private GenreRepository repository;
 
-	@Autowired
-	private RespostasUtil respostasUtil;
-
-	// Verifica se a Description está vazia
-	public boolean isNotValidGenre(GenreEntity genreEntity) {
-
-		return StringUtils.isEmpty(genreEntity.getDescription());
-
-	}
-
-	// Cadastra novo Genre e insere a data do momento que o gênero é criado
-	private GenreEntity cadastraNovoGenre(GenreEntity genreEntity) {
-
-		genreEntity.setCreatedAt(OffsetDateTime.now());
-		genreEntity.setUpdatedAt(OffsetDateTime.now());
-		genreEntity = repository.save(genreEntity);
-
-		return genreEntity;
-
-	}
-
+	/* 
+	 * ********** Métodos chamados pelo GenreController **********
+	 */
+	
 	public ResponseEntity<GenreEntity> save(GenreEntity genreEntity) {
-		if (isNotValidGenre(genreEntity)) {
-			return respostasUtil.getBadRequestGenre(MENSAGEM_DADOS_INVALIDOS);
-		}
 		return new ResponseEntity<GenreEntity>(cadastraNovoGenre(genreEntity), HttpStatus.CREATED);
 	}
 
 	public ResponseEntity<GenreEntity> getGenreById(Long genreId) {
-
-		GenreEntity genreEntity = repository.findGenreById(genreId);
-
-		if (genreEntity == null) {
-			return respostasUtil.getBadRequestGenre(MENSAGEM_DADOS_INVALIDOS);
-		}
-		return new ResponseEntity<GenreEntity>(genreEntity, HttpStatus.OK);
+		verifyIfGenreExists(genreId);
+		return new ResponseEntity<GenreEntity>(repository.findGenreById(genreId), HttpStatus.OK);
 	}
 
 	public ResponseEntity<Page<GenreEntity>> findAll(Pageable pageable) {
+		return new ResponseEntity<Page<GenreEntity>>(buscaTodosGeneros(pageable), HttpStatus.OK);
+	}
+	
+	public ResponseEntity<Page<GenreEntity>> searchDescription(String search, Pageable pageable) {
+		return new ResponseEntity<Page<GenreEntity>>(buscaGenrePeloTitulo(search), HttpStatus.OK);
+	}
+	
+	public ResponseEntity<GenreEntity> updateGenre(Long genreId, GenreEntity genreEntity) {
+		return new ResponseEntity<GenreEntity>(update(genreId, genreEntity), HttpStatus.CREATED);
+	}
 
+	/* 
+	 * ********* Métodos auxiliares *********
+	 */
+	
+	// Cadastra novo Genre e insere a data do momento que o gênero é criado
+	private GenreEntity cadastraNovoGenre(GenreEntity genreEntity) {
+		genreEntity.setCreatedAt(OffsetDateTime.now());
+		genreEntity.setUpdatedAt(OffsetDateTime.now());
+		genreEntity = repository.save(genreEntity);
+
+		//Verifica se o Genre foi realmente cadastrado
+		verifyIfGenreExists(genreEntity.getId());
+		
+		return genreEntity;
+
+	}
+
+	// Busca todos os gêneros cadastrados
+	private Page<GenreEntity> buscaTodosGeneros(Pageable pageable) {
 		Page<GenreEntity> genreEntity = repository.findAll(pageable);
-
-		if (genreEntity == null) {
-			return respostasUtil.getBadRequestGen(MENSAGEM_FAIL);
-		}
-
-		return new ResponseEntity<Page<GenreEntity>>(genreEntity, HttpStatus.OK);
-
+		verifyIfPageIsNull(genreEntity);
+		return genreEntity;
 	}
 
-	public ResponseEntity<GenreEntity> update(Long genreId, GenreEntity genreEntity) {
-		if (isNotValidGenre(genreEntity)) {
-			return respostasUtil.getBadRequestGenre(MENSAGEM_DADOS_INVALIDOS);
-		}
-		return new ResponseEntity<GenreEntity>(updateGenre(genreId, genreEntity), HttpStatus.CREATED);
+	// Busca Genre pela Desription
+	private Page<GenreEntity> buscaGenrePeloTitulo(String search) {
+		Iterable<GenreEntity> genres = repository.findAll();
+		List<GenreEntity> genresFiltrados = new ArrayList<GenreEntity>();
+		
+		genres.forEach(genre -> {
+			if (removeAcento(genre.getDescription().toLowerCase()).contains(removeAcento(search.toLowerCase())))
+				genresFiltrados.add(genre);
+		});
+		
+		// convertento List para page
+		final Page<GenreEntity> page = new PageImpl<>(genresFiltrados);
+		return page;
+	}
+	
+	// Remove acento
+	private static String removeAcento(String str) {
+	    str = Normalizer.normalize(str, Normalizer.Form.NFD);
+	    str = str.replaceAll("[^\\p{ASCII}]", "");
+	    return str;
 	}
 
-	private GenreEntity updateGenre(Long genreId, GenreEntity genre) {
+	// Realiza a atualização do Genre
+	private GenreEntity update(Long genreId, GenreEntity genreEntity) {
 		GenreEntity genreEntityWillUpdate = repository.findGenreById(genreId);
-		genreEntityWillUpdate.setDescription(genre.getDescription());
+		genreEntityWillUpdate.setDescription(genreEntity.getDescription());
 		genreEntityWillUpdate.setUpdatedAt(OffsetDateTime.now());
 
 		repository.save(genreEntityWillUpdate);
 
 		return genreEntityWillUpdate;
+	}	
+
+	/* 
+	 * ********* Métodos de Validação *********
+	 */
+	
+	// Verifica de se o Gênero existe pelo ID
+	private void verifyIfGenreExists(Long id) {
+		if (repository.findGenreById(id) == null) {
+			throw new ResourceNotFoundException("Genre not found for ID: " + id);
+		}
 	}
 
-	public ResponseEntity<Page<GenreEntity>> searchDescription(String search, Pageable pageable) {
-		
-		Iterable<GenreEntity> genres = repository.findAll();
-		List<GenreEntity> genresFiltrados = new ArrayList<GenreEntity>();
-		
-		genres.forEach(genre -> {
-			if(genre.getDescription().toLowerCase().contains(search.toLowerCase())) genresFiltrados.add(genre);
-		});
-		
-		// convertento List para page
-		final Page<GenreEntity> page = new PageImpl<>(genresFiltrados);
-		
-		return new ResponseEntity<Page<GenreEntity>>(page, HttpStatus.OK);
+	// Verifica se o retorno do tipo page é null na busca de todos os gêneros
+	private void verifyIfPageIsNull(Page<GenreEntity> genreEntity) {
+		if (genreEntity == null) {	
+			throw new ResourceNotFoundException("Genres not found");
+		}
 	}
-	
+
 }
