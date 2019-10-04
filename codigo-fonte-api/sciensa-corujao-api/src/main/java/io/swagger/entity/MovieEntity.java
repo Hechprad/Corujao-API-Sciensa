@@ -11,6 +11,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 import org.threeten.bp.OffsetDateTime;
@@ -19,7 +20,7 @@ import org.threeten.bp.OffsetDateTime;
 @Table(name = "movie_tb")
 public class MovieEntity implements Serializable {
 
-	private static final long serialVersionUID = 5708169984669280699L;
+	private static final long serialVersionUID = 9006144777923865184L;
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -43,11 +44,11 @@ public class MovieEntity implements Serializable {
 				inverseJoinColumns={@JoinColumn(name="artist_id")})
 	private List<ArtistEntity> cast;
 
-	@ManyToMany
+	@ManyToOne
 	@JoinTable(	name="movie_has_director", 
 				joinColumns={@JoinColumn(name="movie_id")}, 
 				inverseJoinColumns={@JoinColumn(name="director_id")})
-	private List<ArtistEntity> directors;
+	private ArtistEntity director;
 
 
 	@Column
@@ -88,21 +89,21 @@ public class MovieEntity implements Serializable {
 		this.genres = genres;
 	}
 
-//	public Artist getDirector() {
-//		return director;
-//	}
-//
-//	public void setDirector(Artist director) {
-//		this.director = director;
-//	}
+	public ArtistEntity getDirector() {
+		return director;
+	}
 
-//	public List<Artist> getCast() {
-//		return cast;
-//	}
-//
-//	public void setCast(List<Artist> cast) {
-//		this.cast = cast;
-//	}
+	public void setDirector(ArtistEntity director) {
+		this.director = director;
+	}
+
+	public List<ArtistEntity> getCast() {
+		return cast;
+	}
+
+	public void setCast(List<ArtistEntity> cast) {
+		this.cast = cast;
+	}
 
 	public OffsetDateTime getCreatedAt() {
 		return createdAt;

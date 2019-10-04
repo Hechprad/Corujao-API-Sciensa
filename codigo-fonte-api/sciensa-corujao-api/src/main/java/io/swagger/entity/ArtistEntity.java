@@ -1,14 +1,12 @@
 package io.swagger.entity;
 
 import java.io.Serializable;
-import java.util.List;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.ManyToMany;
 import javax.persistence.Table;
 
 import org.threeten.bp.LocalDate;
@@ -18,7 +16,7 @@ import org.threeten.bp.OffsetDateTime;
 @Table(name = "artist_tb")
 public class ArtistEntity implements Serializable {
 	
-	private static final long serialVersionUID = -3579556170775580134L;
+	private static final long serialVersionUID = 6130169371117039414L;
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -39,12 +37,6 @@ public class ArtistEntity implements Serializable {
 	@Column
 	private OffsetDateTime updatedAt = null;
 	
-	@ManyToMany(mappedBy = "cast")
-	private List<MovieEntity> directedMovies;
-	
-	@ManyToMany(mappedBy = "directors")
-	private List<MovieEntity> filmography;
-
 	public Long getId() {
 		return id;
 	}
@@ -91,22 +83,6 @@ public class ArtistEntity implements Serializable {
 
 	public void setUpdatedAt(OffsetDateTime updatedAt) {
 		this.updatedAt = updatedAt;
-	}
-
-	public List<MovieEntity> getDirectedMovies() {
-		return directedMovies;
-	}
-
-	public void setDirectedMovies(List<MovieEntity> directedMovies) {
-		this.directedMovies = directedMovies;
-	}
-
-	public List<MovieEntity> getFilmography() {
-		return filmography;
-	}
-
-	public void setFilmography(List<MovieEntity> filmography) {
-		this.filmography = filmography;
 	}
 
 }

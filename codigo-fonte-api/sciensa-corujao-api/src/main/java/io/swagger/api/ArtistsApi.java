@@ -5,23 +5,25 @@
  */
 package io.swagger.api;
 
-import io.swagger.model.Artist;
-import io.swagger.model.ResponseError;
-import io.swagger.annotations.*;
+import java.util.List;
+
+import javax.validation.Valid;
+
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RequestPart;
-import org.springframework.web.multipart.MultipartFile;
 
-import javax.validation.Valid;
-import javax.validation.constraints.*;
-import java.util.List;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
+import io.swagger.annotations.ApiResponse;
+import io.swagger.annotations.ApiResponses;
+import io.swagger.entity.ArtistEntity;
+import io.swagger.entity.MovieEntity;
+import io.swagger.model.ResponseError;
 @javax.annotation.Generated(value = "io.swagger.codegen.languages.SpringCodegen", date = "2019-10-02T14:53:20.805Z")
 
 @Api(value = "artists", description = "the artists API")
@@ -35,7 +37,7 @@ public interface ArtistsApi {
     @RequestMapping(value = "/artists",
         produces = { "application/json" }, 
         method = RequestMethod.POST)
-    ResponseEntity<Object> addArtist(@ApiParam(value = "" ,required=true )  @Valid @RequestBody Artist artist);
+    ResponseEntity<ArtistEntity> addArtist(@ApiParam(value = "" ,required=true )  @Valid @RequestBody ArtistEntity artistEntity);
 
 
     @ApiOperation(value = "Detalhe de artista", nickname = "getArtist", notes = "", response = Object.class, tags={ "artists", })
@@ -46,7 +48,7 @@ public interface ArtistsApi {
     @RequestMapping(value = "/artists/{artistId}",
         produces = { "application/json" }, 
         method = RequestMethod.GET)
-    ResponseEntity<Object> getArtist(@ApiParam(value = "",required=true) @PathVariable("artistId") Long artistId);
+    ResponseEntity<ArtistEntity> getArtist(@ApiParam(value = "",required=true) @PathVariable("artistId") Long artistId);
 
 
     @ApiOperation(value = "Filmografia", nickname = "getArtistFilmography", notes = "", response = Object.class, tags={ "artists", })
@@ -57,7 +59,7 @@ public interface ArtistsApi {
     @RequestMapping(value = "/artists/{artistId}/filmography",
         produces = { "application/json" }, 
         method = RequestMethod.GET)
-    ResponseEntity<Object> getArtistFilmography(@ApiParam(value = "",required=true) @PathVariable("artistId") Long artistId);
+    ResponseEntity<List<MovieEntity>> getArtistFilmography(@ApiParam(value = "",required=true) @PathVariable("artistId") Long artistId);
 
 
     @ApiOperation(value = "Lista os artistas", nickname = "listArtists", notes = "", response = Object.class, tags={ "artists", })
@@ -68,7 +70,7 @@ public interface ArtistsApi {
     @RequestMapping(value = "/artists",
         produces = { "application/json" }, 
         method = RequestMethod.GET)
-    ResponseEntity<Object> listArtists(@ApiParam(value = "Página da listagem a ser retornada", defaultValue = "1") @Valid @RequestParam(value = "page", required = false, defaultValue="1") Integer page,@ApiParam(value = "Tamanho da paginação a ser utilizada no request", defaultValue = "10") @Valid @RequestParam(value = "size", required = false, defaultValue="10") Integer size,@ApiParam(value = "Retorna itens cuja descrição se pareça com o valor informado") @Valid @RequestParam(value = "search", required = false) String search);
+    ResponseEntity<List<ArtistEntity>> listArtists(@ApiParam(value = "Página da listagem a ser retornada", defaultValue = "1") @Valid @RequestParam(value = "page", required = false, defaultValue="1") Integer page,@ApiParam(value = "Tamanho da paginação a ser utilizada no request", defaultValue = "10") @Valid @RequestParam(value = "size", required = false, defaultValue="10") Integer size,@ApiParam(value = "Retorna itens cuja descrição se pareça com o valor informado") @Valid @RequestParam(value = "search", required = false) String search);
 
 
     @ApiOperation(value = "Atualização de artista", nickname = "updateArtist", notes = "", response = Object.class, tags={ "artists", })
@@ -80,6 +82,6 @@ public interface ArtistsApi {
         produces = { "application/json" }, 
         consumes = { "application/json" },
         method = RequestMethod.PUT)
-    ResponseEntity<Object> updateArtist(@ApiParam(value = "",required=true) @PathVariable("artistId") Long artistId,@ApiParam(value = "" ,required=true )  @Valid @RequestBody Artist artist);
+    ResponseEntity<ArtistEntity> updateArtist(@ApiParam(value = "",required=true) @PathVariable("artistId") Long artistId,@ApiParam(value = "" ,required=true )  @Valid @RequestBody ArtistEntity artistEntity);
 
 }

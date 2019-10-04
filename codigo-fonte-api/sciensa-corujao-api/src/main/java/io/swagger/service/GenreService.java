@@ -83,7 +83,7 @@ public class GenreService {
 	}
 
 	private GenreEntity updateGenre(Long genreId, GenreEntity genre) {
-		GenreEntity genreEntityWillUpdate = repository.findOne(genreId);
+		GenreEntity genreEntityWillUpdate = repository.findGenreById(genreId);
 		genreEntityWillUpdate.setDescription(genre.getDescription());
 		genreEntityWillUpdate.setUpdatedAt(OffsetDateTime.now());
 
