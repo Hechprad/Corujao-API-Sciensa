@@ -27,7 +27,6 @@ public class GenresApiController implements GenresApi {
 
 	public ResponseEntity<GenreEntity> addGenre(
 			@ApiParam(value = "", required = true) @Valid @RequestBody GenreEntity genreEntity) {
-			// add genre
 		return genreService.save(genreEntity);
 	}
 

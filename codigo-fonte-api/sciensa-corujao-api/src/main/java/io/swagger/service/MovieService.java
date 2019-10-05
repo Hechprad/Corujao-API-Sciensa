@@ -1,5 +1,6 @@
 package io.swagger.service;
 
+import java.text.Normalizer;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -10,29 +11,20 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import org.springframework.util.StringUtils;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
 import org.threeten.bp.OffsetDateTime;
 
 import io.swagger.entity.MovieEntity;
 import io.swagger.repository.MovieRepository;
 import io.swagger.util.ResourceNotFoundException;
-import io.swagger.util.RespostasUtil;
 
 @Service
 public class MovieService {
-	// Mensagens para o header
-	public static final String MENSAGEM_DADOS_INVALIDOS = "Filmes - Parâmetros invalidos - client side";
-
-	public static final String MENSAGEM_FAIL = "Filmes não encontrados";
-
-	public static final String SEM_CONTEUDO = "Filme não encontrado";
 
 	// camada para conversar com o DB
 	@Autowired
 	private MovieRepository repository;
-
-	@Autowired
-	private RespostasUtil respostasUtil;
 
 	/* 
 	 * ********** Métodos chamados pelo GenreController **********
@@ -46,25 +38,22 @@ public class MovieService {
 		return new ResponseEntity<MovieEntity>(repository.findOne(movieId), HttpStatus.OK);
 	}
 	
-	
 	public ResponseEntity<MovieEntity> delete(Long movieId) {
 		repository.delete(movieId);
-		return respostasUtil.getNoContentMovie(SEM_CONTEUDO);
+		return respondeMovieDeletado();
+	}
+
+	public ResponseEntity<Page<MovieEntity>> searchTitle(String search, Pageable pageable) {
+		return new ResponseEntity<Page<MovieEntity>>(buscaMoviePeloTitulo(search), HttpStatus.OK);
 	}
 	
-	
-	
-	
 	public ResponseEntity<Page<MovieEntity>> findAll(Pageable pageable) {
-
-		Page<MovieEntity> movieEntity = repository.findAll(pageable);
-
-		if (movieEntity == null) {
-			return respostasUtil.getBadRequestMovies(MENSAGEM_FAIL);
-		}
-
-		return new ResponseEntity<Page<MovieEntity>>(movieEntity, HttpStatus.OK);
-
+		return new ResponseEntity<Page<MovieEntity>>(buscaTodosFilmes(pageable), HttpStatus.OK);
+	}
+	
+	public ResponseEntity<MovieEntity> updateMovie(Long movieId, MovieEntity movieEntity) {
+		verifyIfMovieExists(movieId);
+		return new ResponseEntity<MovieEntity>(update(movieId, movieEntity), HttpStatus.CREATED);
 	}
 	
 	/* 
@@ -83,7 +72,55 @@ public class MovieService {
 		return movieEntity;
 	}
 	
+	// Retorna status 204 e header com mensagem de sucesso 
+	private ResponseEntity<MovieEntity> respondeMovieDeletado() {
+		MultiValueMap<String, String> header = new LinkedMultiValueMap<String, String>();
+		header.add("Mensagem" , "Filme removido com sucesso");
+		return new ResponseEntity<MovieEntity>(header, HttpStatus.NO_CONTENT);
+	}
 	
+	// Busca Movies pelo title
+	private Page<MovieEntity> buscaMoviePeloTitulo(String search) {
+		Iterable<MovieEntity> movies = repository.findAll();
+		List<MovieEntity> moviesFiltrados = new ArrayList<MovieEntity>();
+		
+		movies.forEach(movie -> {
+			if(removeAcento(movie.getTitle().toLowerCase()).contains(removeAcento(search.toLowerCase()))) moviesFiltrados.add(movie);
+		});
+		
+		// convertento List para page
+		final Page<MovieEntity> page = new PageImpl<>(moviesFiltrados);
+		return page;
+	}
+	
+	// Remove acento
+	private static String removeAcento(String str) {
+	    str = Normalizer.normalize(str, Normalizer.Form.NFD);
+	    str = str.replaceAll("[^\\p{ASCII}]", "");
+	    return str;
+	}
+	
+	// Busca todos os filmes cadastrados
+	private Page<MovieEntity> buscaTodosFilmes(Pageable pageable) {
+		Page<MovieEntity> movieEntity = repository.findAll(pageable);
+		verifyIfPageIsNull(movieEntity);
+		return movieEntity;
+	}
+	
+	// Realiza a atualização do Movie
+	private MovieEntity update(Long movieId, MovieEntity movieEntity) {
+		MovieEntity movieEntityWillUpdate = repository.findOne(movieId);
+		movieEntityWillUpdate.setTitle(movieEntity.getTitle());
+		movieEntityWillUpdate.setReleaseYear(movieEntity.getReleaseYear());
+		movieEntityWillUpdate.setGenres(movieEntity.getGenres());
+		movieEntityWillUpdate.setCast(movieEntity.getCast());
+		movieEntityWillUpdate.setDirector(movieEntity.getDirector());
+		movieEntityWillUpdate.setUpdatedAt(OffsetDateTime.now());
+
+		repository.save(movieEntityWillUpdate);
+
+		return movieEntityWillUpdate;
+	}
 	
 	/* 
 	 * ********* Métodos de Validação *********
@@ -95,65 +132,12 @@ public class MovieService {
 			throw new ResourceNotFoundException("Movie not found for ID: " + id);
 		}
 	}
-
 	
-	
-	
-	// Verifica se o título e o ano de lançamento estão vazios
-	public boolean isNotValidMovie(MovieEntity movieEntity) {
-		if (StringUtils.isEmpty(movieEntity.getTitle())
-				|| StringUtils.isEmpty(String.valueOf(movieEntity.getReleaseYear()))) {
-			return true;
+	// Verifica se o retorno do tipo page é null na busca de todos os filmes
+	private void verifyIfPageIsNull(Page<MovieEntity> movieEntity) {
+		if (movieEntity == null) {	
+			throw new ResourceNotFoundException("Movies not found");
 		}
-		return false;
-	}
-
-	
-
-	
-
-	
-
-	
-
-	public ResponseEntity<MovieEntity> update(Long movieId, MovieEntity movieEntity) {
-		
-		if (isNotValidMovie(movieEntity)) {
-			return respostasUtil.getBadRequestMovie(MENSAGEM_DADOS_INVALIDOS);
-		}
-		return new ResponseEntity<MovieEntity>(updateMovie(movieId, movieEntity), HttpStatus.CREATED);
-
-	}
-
-	private MovieEntity updateMovie(Long movieId, MovieEntity movieEntity) {
-		
-		MovieEntity movieEntityWillUpdate = repository.findOne(movieId);
-		
-		movieEntityWillUpdate.setTitle(movieEntity.getTitle());
-		movieEntityWillUpdate.setReleaseYear(movieEntity.getReleaseYear());
-		movieEntityWillUpdate.setUpdatedAt(OffsetDateTime.now());
-		movieEntityWillUpdate.setGenres(movieEntity.getGenres());
-
-		repository.save(movieEntityWillUpdate);
-
-		return movieEntityWillUpdate;
-	}
-
-	
-
-	public ResponseEntity<Page<MovieEntity>> searchTitle(String search, Pageable pageable) {
-			
-		Iterable<MovieEntity> movies = repository.findAll();
-		List<MovieEntity> moviesFiltrados = new ArrayList<MovieEntity>();
-		
-		movies.forEach(movie -> {
-			if(movie.getTitle().toLowerCase().contains(search.toLowerCase())) moviesFiltrados.add(movie);
-		});
-		
-		// convertento List para page
-		final Page<MovieEntity> page = new PageImpl<>(moviesFiltrados);
-		
-		return new ResponseEntity<Page<MovieEntity>>(page, HttpStatus.OK);
 	}
 
 }

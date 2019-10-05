@@ -17,7 +17,6 @@ import io.swagger.entity.ArtistEntity;
 import io.swagger.entity.MovieEntity;
 import io.swagger.repository.ArtistRepository;
 import io.swagger.repository.MovieRepository;
-import io.swagger.util.ResourceNoContentException;
 import io.swagger.util.ResourceNotFoundException;
 
 @Service
@@ -84,7 +83,7 @@ public class ArtistService {
 		return artistEntity;
 	}
 	
-	// Busca Artist pelo FirstName
+	// Busca Artists pelo firstName
 	private Page<ArtistEntity> buscaArtistPeloNome(String search) {
 		Iterable<ArtistEntity> artists = repository.findAll();
 		List<ArtistEntity> artistsFiltrados = new ArrayList<ArtistEntity>();
@@ -122,7 +121,7 @@ public class ArtistService {
 	// Busca filmes que tenham o Artist no cast
 	private List<MovieEntity> buscaFilmesDoArtista(Long artistId) {
 		List<MovieEntity> movies = getAllMovies();
-		verifyIfMoviesListIsVoid(movies);
+		verifyIfMoviesListIsVoid(movies, artistId);
 		List<MovieEntity> filmography = new ArrayList<MovieEntity>();
 
 		movies.forEach(movie -> movie.getCast().forEach(artist -> {
@@ -158,10 +157,10 @@ public class ArtistService {
 		}
 	}
 
-	// Verifica de se o Artista existe pelo ID
-	private void verifyIfMoviesListIsVoid(List<MovieEntity> movies) {
+	// Verifica de se a lista de filmes está vazia
+	private void verifyIfMoviesListIsVoid(List<MovieEntity> movies, Long artistId) {
 		if (movies.size() <= 0) {
-			throw new ResourceNoContentException("Empty filmography to this Artist.");
+			throw new ResourceNotFoundException("Artist with ID: '"+ artistId + "' hasn't filmography");
 		}
 	}
 }

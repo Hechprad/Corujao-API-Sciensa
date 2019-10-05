@@ -29,16 +29,16 @@ public class MoviesApiController implements MoviesApi {
 		return movieService.save(movieEntity);
 	}
 
-	public ResponseEntity<MovieEntity> removeMovie(
-			@ApiParam(value = "", required = true) @PathVariable("movieId") Long movieId) {
-			return movieService.delete(movieId);
-	}
-	
 	public ResponseEntity<MovieEntity> getMovie(
 			@ApiParam(value = "", required = true) @PathVariable("movieId") Long movieId) {
 		return movieService.getMovieById(movieId);
 	}
-
+	
+	public ResponseEntity<MovieEntity> removeMovie(
+			@ApiParam(value = "", required = true) @PathVariable("movieId") Long movieId) {
+		return movieService.delete(movieId);
+	}
+	
 	public ResponseEntity<Page<MovieEntity>> listMovies(
 			@ApiParam(value = "Página da listagem a ser retornada", defaultValue = "1") @Valid @RequestParam(value = "page", required = false, defaultValue = "1") Integer page,
 			@ApiParam(value = "Tamanho da paginação a ser utilizada no request", defaultValue = "10") @Valid @RequestParam(value = "size", required = false, defaultValue = "10") Integer size,
@@ -51,7 +51,7 @@ public class MoviesApiController implements MoviesApi {
 	public ResponseEntity<MovieEntity> updateMovie(
 			@ApiParam(value = "", required = true) @PathVariable("movieId") Long movieId,
 			@ApiParam(value = "", required = true) @Valid @RequestBody MovieEntity movieEntity) {
-		return movieService.update(movieId, movieEntity);
+		return movieService.updateMovie(movieId, movieEntity);
 	}
 
 }
