@@ -5,13 +5,17 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import org.springframework.dao.EmptyResultDataAccessException;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.context.request.WebRequest;
+import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
+import io.swagger.error.ErrorDetails;
 import io.swagger.error.ResourceBadRequestDetails;
 import io.swagger.error.ResourceBadRequestException;
 import io.swagger.error.ResourceInternalServerErrorDetails;
@@ -19,8 +23,10 @@ import io.swagger.error.ResourceNotFoundDetails;
 import io.swagger.error.ResourceNotFoundException;
 import io.swagger.error.ValidationErrorDetails;
 
+
+// ResponseEntityExceptionHandler = classe do spring que trata as exception
 @ControllerAdvice
-public class RestExceptionHandler {
+public class RestExceptionHandler extends ResponseEntityExceptionHandler {
 	
 	// NOT FOUND
 	@ExceptionHandler(ResourceNotFoundException.class)
@@ -52,8 +58,9 @@ public class RestExceptionHandler {
 	
 	
 	// BAD REQUEST for exception "MethodArgumentNotValidException"
-	@ExceptionHandler(MethodArgumentNotValidException.class)
-	public ResponseEntity<?> methodArgumentNotValidException(MethodArgumentNotValidException manvException){
+	@Override
+	public ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException manvException,
+			HttpHeaders headers, HttpStatus status, WebRequest request){
 		
 		List<FieldError> fieldErrors = manvException.getBindingResult().getFieldErrors();
 		// Separando os campos com erro por vírgula
@@ -64,7 +71,7 @@ public class RestExceptionHandler {
 		ValidationErrorDetails vjDetails = ValidationErrorDetails.Builder
 			.newBuilder()
 			.statusCode(HttpStatus.BAD_REQUEST.value())
-			.type("Not Found")
+			.type("Bad Request")
 			.timestamp(new Date().getTime())
 			.field(fields)
 			.fieldMessage(fieldMessages)
@@ -87,6 +94,25 @@ public class RestExceptionHandler {
 				.devMessage("Exception lançada: " + erdaException.getClass().getName())
 				.build();
 		return new ResponseEntity<>(vriseDetails, HttpStatus.INTERNAL_SERVER_ERROR);
+	}
+	
+	/*
+	 * Retorno das exceptions tratadas pelo spring 
+	 * Método sobreescrito para padronizarmos retorno das exceptions lançadas.
+	 */
+	@Override
+	protected ResponseEntity<Object> handleExceptionInternal(Exception ex, Object body,	HttpHeaders headers, HttpStatus status, WebRequest request) {
+
+		ErrorDetails errorDetails = ErrorDetails.Builder
+				.newBuilder()
+				.statusCode(status.value())
+				.type("Internal Exception - Exceção Interna")
+				.timestamp(new Date().getTime())
+				.detail("Mensagem da Eceção: " + ex.getMessage())
+				.devMessage("Exception lançada: " + ex.getClass().getName())
+				.build();
+		
+		return new ResponseEntity<>(errorDetails, headers, status);
 	}
 	
 }

@@ -27,7 +27,7 @@ public class MovieEntity implements Serializable {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id = null;
 
-	@NotEmpty
+	@NotEmpty(message = "Título é obrigatório")
 	@Column(nullable = false)
 	private String title;
 

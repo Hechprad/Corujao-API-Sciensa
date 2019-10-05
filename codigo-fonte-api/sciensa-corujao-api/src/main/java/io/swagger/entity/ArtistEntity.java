@@ -23,11 +23,11 @@ public class ArtistEntity implements Serializable {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id = null;
 
-	@NotEmpty
+	@NotEmpty(message = "Primeiro nome é obrigatório.")
 	@Column(nullable = false)
 	private String firstName = null;
 
-	@NotEmpty
+	@NotEmpty(message = "Sobrenome é obrigatório.")
 	@Column(nullable = false)
 	private String lastName = null;
 

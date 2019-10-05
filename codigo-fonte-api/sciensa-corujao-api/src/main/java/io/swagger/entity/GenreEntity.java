@@ -24,7 +24,7 @@ public class GenreEntity implements Serializable{
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 
-	@NotEmpty
+	@NotEmpty(message = "Nome do gênero é obrigatório.")
 	@Column(nullable = false)
 	private String description;
 
