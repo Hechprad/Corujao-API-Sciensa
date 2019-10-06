@@ -69,7 +69,7 @@ public class GenreService {
 	// Busca todos os gêneros cadastrados
 	private Page<GenreEntity> buscaTodosGeneros(Pageable pageable) {
 		Page<GenreEntity> genreEntity = repository.findAll(pageable);
-		verifyIfPageIsNull(genreEntity);
+		verifyIfPageHasContent(genreEntity);
 		return genreEntity;
 	}
 
@@ -118,8 +118,8 @@ public class GenreService {
 	}
 
 	// Verifica se o retorno do tipo page é null na busca de todos os gêneros
-	private void verifyIfPageIsNull(Page<GenreEntity> genreEntity) {
-		if (genreEntity == null) {
+	private void verifyIfPageHasContent(Page<GenreEntity> genreEntity) {
+		if (!genreEntity.hasContent()) {
 			throw new ResourceNotFoundException("Gêneros não encontrados");
 		}
 	}

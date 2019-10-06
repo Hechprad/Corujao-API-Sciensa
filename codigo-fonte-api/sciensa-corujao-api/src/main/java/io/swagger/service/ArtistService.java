@@ -79,7 +79,7 @@ public class ArtistService {
 	// Busca todos os artistas cadastrados
 	private Page<ArtistEntity> buscaTodosArtistas(Pageable pageable) {
 		Page<ArtistEntity> artistEntity = repository.findAll(pageable);
-		verifyIfPageIsNull(artistEntity);
+		verifyIfPageHasContent(artistEntity);
 		return artistEntity;
 	}
 
@@ -152,8 +152,8 @@ public class ArtistService {
 	}
 
 	// Verifica se o retorno do tipo page é null na busca de todos os artistas
-	private void verifyIfPageIsNull(Page<ArtistEntity> artistEntity) {
-		if (artistEntity == null) {
+	private void verifyIfPageHasContent(Page<ArtistEntity> artistEntity) {
+		if (!artistEntity.hasContent()) {
 			throw new ResourceNotFoundException("Artistas não encontrados.");
 		}
 	}

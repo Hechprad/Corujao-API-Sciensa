@@ -107,7 +107,7 @@ public class MovieService {
 	// Busca todos os filmes cadastrados
 	private Page<MovieEntity> buscaTodosFilmes(Pageable pageable) {
 		Page<MovieEntity> movieEntity = repository.findAll(pageable);
-		verifyIfPageIsNull(movieEntity);
+		verifyIfPageHasContent(movieEntity);
 		return movieEntity;
 	}
 
@@ -152,8 +152,8 @@ public class MovieService {
 	}
 
 	// Verifica se o retorno do tipo page é null na busca de todos os filmes
-	private void verifyIfPageIsNull(Page<MovieEntity> movieEntity) {
-		if (movieEntity == null) {
+	private void verifyIfPageHasContent(Page<MovieEntity> movieEntity) {
+		if (!movieEntity.hasContent()) {
 			throw new ResourceNotFoundException("Filmes não encontrados!");
 		}
 	}

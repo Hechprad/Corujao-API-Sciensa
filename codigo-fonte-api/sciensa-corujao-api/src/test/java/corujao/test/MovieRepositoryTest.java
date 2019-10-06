@@ -82,7 +82,6 @@ public class MovieRepositoryTest {
 		artistRepository.delete(artistParaCastEDirector);
 	}
 	
-	
 	@Test
 	public void saveDevePersistirDadosNoBanco() {
 		
