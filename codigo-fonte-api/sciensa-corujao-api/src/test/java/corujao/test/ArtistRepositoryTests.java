@@ -110,7 +110,7 @@ public class ArtistRepositoryTests {
 		artistEntity.setLastName("Silva");
 		artistEntity.setDateOfBirth(LocalDate.of(1970, 10, 30));
 		
-		artistRepository.save(new ArtistEntity());
+		artistRepository.save(artistEntity);
 	}
 	
 	@Test
@@ -122,7 +122,7 @@ public class ArtistRepositoryTests {
 		artistEntity.setFirstName("Antonio");
 		artistEntity.setDateOfBirth(LocalDate.of(1970, 10, 30));
 		
-		artistRepository.save(new ArtistEntity());
+		artistRepository.save(artistEntity);
 	}
 	
 }
