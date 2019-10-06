@@ -108,7 +108,7 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
 				.statusCode(status.value())
 				.type("Internal Exception - Exceção Interna")
 				.timestamp(new Date().getTime())
-				.detail("Mensagem da Eceção: " + ex.getMessage())
+				.detail("Mensagem da Exceção: " + ex.getMessage())
 				.devMessage("Exception lançada: " + ex.getClass().getName())
 				.build();
 		

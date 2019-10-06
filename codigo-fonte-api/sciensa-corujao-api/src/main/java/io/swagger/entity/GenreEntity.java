@@ -38,8 +38,7 @@ public class GenreEntity implements Serializable{
 	private List<MovieEntity> movies;
 
 	// construtores para os testes
-	public GenreEntity() {
-	}
+	public GenreEntity() {}
 	
 	public GenreEntity(String description, 
 			OffsetDateTime createdAt, OffsetDateTime updatedAt) {

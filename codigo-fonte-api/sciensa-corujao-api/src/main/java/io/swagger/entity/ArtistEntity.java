@@ -40,6 +40,17 @@ public class ArtistEntity implements Serializable {
 	@Column
 	private OffsetDateTime updatedAt = null;
 	
+	// construtores para os testes
+	public ArtistEntity() {}
+	
+	public ArtistEntity(String firstName, String lastName, LocalDate dateOfBirth, OffsetDateTime createdAt, OffsetDateTime updatedAt) {
+		this.firstName = firstName;
+		this.lastName = lastName;
+		this.dateOfBirth = dateOfBirth;
+		this.createdAt = createdAt;
+		this.updatedAt = updatedAt;
+	}
+
 	public Long getId() {
 		return id;
 	}
