@@ -134,7 +134,7 @@ public class MovieService {
 	// dez anos
 	private void verifyValueOfReleaseYear(Integer releaseYear) {
 		if (releaseYear == null) {
-			throw new ResourceBadRequestException("É necessário um valor entre 1850 e " + Calendar.getInstance().get(Calendar.YEAR) + 10);
+			throw new ResourceBadRequestException("É necessário um valor entre 1850 e " + (Calendar.getInstance().get(Calendar.YEAR) + 10));
 		}
 		if (releaseYear < 1850) {
 			throw new ResourceBadRequestException("Não existiam cameras nesta época! Ano muito antigo: " + releaseYear);

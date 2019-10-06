@@ -3,6 +3,8 @@ package corujao.test;
 import javax.validation.ConstraintViolationException;
 
 import org.assertj.core.api.Assertions;
+import org.junit.After;
+import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
@@ -28,54 +30,77 @@ public class ArtistRepositoryTests {
 	@Rule
 	public ExpectedException thrown = ExpectedException.none();
 	
-	private ArtistEntity artistEntity = new ArtistEntity(
+	private ArtistEntity artist1 = new ArtistEntity(
 			"Sophie",
 			"Turner",
 			LocalDate.of(1996, 2, 21),
 			OffsetDateTime.now(), 
 			OffsetDateTime.now());
 	
+	@Before
+	public void before() {
+		artistRepository.save(artist1);
+	}
+	
+	@After
+	public void after() {
+		artistRepository.delete(artist1);
+	}
+	
 	@Test
 	public void saveDevePersistirDadosNoBanco() {
 		
-		this.artistRepository.save(artistEntity);
+		ArtistEntity artist2 = new ArtistEntity(
+				"Sophie",
+				"Turner",
+				LocalDate.of(1996, 2, 21),
+				OffsetDateTime.now(), 
+				OffsetDateTime.now());
 		
-		Assertions.assertThat(artistEntity.getId()).isNotNull();
-		Assertions.assertThat(artistEntity.getFirstName()).isEqualTo("Sophie");
-		Assertions.assertThat(artistEntity.getLastName()).isEqualTo("Turner");
-		artistRepository.delete(artistEntity.getId());
+		artistRepository.save(artist2);
+		
+		Assertions.assertThat(artist2.getId()).isNotNull();
+		Assertions.assertThat(artist2.getFirstName()).isEqualTo("Sophie");
+		Assertions.assertThat(artist2.getLastName()).isEqualTo("Turner");
+		artistRepository.delete(artist2.getId());
 	}
 	
 	@Test
 	public void deleteDeveRemoverDadosDoBanco() {
 		
-		this.artistRepository.save(artistEntity);
+		ArtistEntity artist2 = new ArtistEntity(
+				"Sophie",
+				"Turner",
+				LocalDate.of(1996, 2, 21),
+				OffsetDateTime.now(), 
+				OffsetDateTime.now());
 		
-		artistRepository.delete(artistEntity);
+		artistRepository.save(artist2);
 		
-		Assertions.assertThat(artistRepository.findOne(artistEntity.getId())).isNull();
+		artistRepository.delete(artist2);
+		
+		Assertions.assertThat(artistRepository.findOne(artist2.getId())).isNull();
 	}
 	
 	@Test
 	public void updateDeveAtualizarDadosDoBanco() {
 		
-		this.artistRepository.save(artistEntity);
+		artistRepository.save(artist1);
 		
-		artistEntity.setFirstName("Roberta");
-		artistEntity.setLastName("Almeida");
-		artistEntity.setDateOfBirth(LocalDate.of(1970, 10, 30));
+		artist1.setFirstName("Roberta");
+		artist1.setLastName("Almeida");
+		artist1.setDateOfBirth(LocalDate.of(1970, 10, 30));
 		
-		this.artistRepository.save(artistEntity);
+		artistRepository.save(artist1);
 		
-		artistEntity = this.artistRepository.findOne(artistEntity.getId());
+		artist1 = artistRepository.findOne(artist1.getId());
 		
-		Assertions.assertThat(artistEntity.getFirstName()).isEqualTo("Roberta");
-		Assertions.assertThat(artistEntity.getLastName()).isEqualTo("Almeida");
-		Assertions.assertThat(artistEntity.getDateOfBirth()).isEqualTo(LocalDate.of(1970, 10, 30));
+		Assertions.assertThat(artist1.getFirstName()).isEqualTo("Roberta");
+		Assertions.assertThat(artist1.getLastName()).isEqualTo("Almeida");
+		Assertions.assertThat(artist1.getDateOfBirth()).isEqualTo(LocalDate.of(1970, 10, 30));
 		
-		artistRepository.delete(artistEntity.getId());
 	}
-	
+
 	@Test
 	public void naoDeveCriarArtistaSePrimeiroNomeForVazio() {
 		thrown.expect(ConstraintViolationException.class);
@@ -85,7 +110,7 @@ public class ArtistRepositoryTests {
 		artistEntity.setLastName("Silva");
 		artistEntity.setDateOfBirth(LocalDate.of(1970, 10, 30));
 		
-		this.artistRepository.save(new ArtistEntity());
+		artistRepository.save(new ArtistEntity());
 	}
 	
 	@Test
@@ -97,7 +122,7 @@ public class ArtistRepositoryTests {
 		artistEntity.setFirstName("Antonio");
 		artistEntity.setDateOfBirth(LocalDate.of(1970, 10, 30));
 		
-		this.artistRepository.save(new ArtistEntity());
+		artistRepository.save(new ArtistEntity());
 	}
 	
 }
