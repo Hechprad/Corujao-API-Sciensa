@@ -37,6 +37,17 @@ public class GenreEntity implements Serializable{
 	@ManyToMany(mappedBy = "genres")
 	private List<MovieEntity> movies;
 
+	// construtores para os testes
+	public GenreEntity() {
+	}
+	
+	public GenreEntity(String description, 
+			OffsetDateTime createdAt, OffsetDateTime updatedAt) {
+		this.description = description;
+		this.createdAt = createdAt;
+		this.updatedAt = updatedAt;
+	}
+
 	public Long getId() {
 		return id;
 	}
