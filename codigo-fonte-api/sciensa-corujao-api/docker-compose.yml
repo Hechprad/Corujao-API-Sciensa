@@ -1,29 +1,27 @@
-version: '3'
+version: "3"
 services:
   db:
-    image: mysql/mysql-server:8.0.17
-    environment:
-      - MYSQL_DATABASE=movies_db
-      - MYSQL_ROOT_PASSWORD=root
-      - MYSQL_ROOT_HOST=%
+    image: postgres:latest
+    container_name: postgres_db
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
     ports:
-      - 3306:3306
-    restart: always
-    networks:
-      - network-db
-  spring-boot:
-    image: api-spring
+      - 5432:5432
+    environment:
+         - POSTGRES_PASSWORD=admin
+         - POSTGRES_USER=postgres
+         - POSTGRES_DB=movies_db
+    restart: unless-stopped
+  corujao:
+    image: teste1_com_postgre
     build:
       context: . 
       dockerfile: Dockerfile
-    container_name: spring-boot-api
-    expose:
-      - 5000
-    restart: always
-    networks:
-      - network-db
+    container_name: corujao_teste
+    ports:
+      - 5000:5000
+    restart: unless-stopped
     depends_on:
       - db
-networks:
-    network-db:
-      driver: bridge
+volumes:
+  postgres-data:
