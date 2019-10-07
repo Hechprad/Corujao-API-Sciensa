@@ -46,6 +46,14 @@ public class GenreEntity implements Serializable{
 		this.createdAt = createdAt;
 		this.updatedAt = updatedAt;
 	}
+	
+	public GenreEntity(Long id, String description, 
+			OffsetDateTime createdAt, OffsetDateTime updatedAt) {
+		this.id = id;
+		this.description = description;
+		this.createdAt = createdAt;
+		this.updatedAt = updatedAt;
+	}
 
 	public Long getId() {
 		return id;

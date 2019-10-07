@@ -68,9 +68,8 @@ public class GenreService {
 
 	// Busca todos os gêneros cadastrados
 	private Page<GenreEntity> buscaTodosGeneros(Pageable pageable) {
-		Page<GenreEntity> genreEntity = repository.findAll(pageable);
-		verifyIfPageHasContent(genreEntity);
-		return genreEntity;
+		verifyIfPageHasContent(repository.findAll(pageable));
+		return repository.findAll(pageable);
 	}
 
 	// Busca Genre pela Desription
