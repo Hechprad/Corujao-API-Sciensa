@@ -2,6 +2,7 @@ package corujao.test;
 
 import static java.util.Arrays.asList;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.assertj.core.api.Assertions;
@@ -19,7 +20,6 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.junit4.SpringRunner;
-import org.springframework.test.web.servlet.MockMvc;
 import org.threeten.bp.OffsetDateTime;
 
 import io.swagger.Swagger2SpringBoot;
@@ -38,23 +38,49 @@ public class GenreControllerTests {
 	@MockBean
 	private GenreRepository genreRepository;
 
-	@Autowired
-	private MockMvc mockMvc;
-
 	@Test
-	public void listGenresDeveRetornarStatus200() {
+	public void getGenreDeveRetornarStatusCode200() {
+		GenreEntity genre = new GenreEntity(1L, "Aventura", OffsetDateTime.now(), OffsetDateTime.now());
 		
-		List<GenreEntity> genres = asList(
-				new GenreEntity(1L, "Aventura", OffsetDateTime.now(), OffsetDateTime.now()),
-				new GenreEntity(2L, "Comédia", OffsetDateTime.now(), OffsetDateTime.now()));
-		// PageRequest(int page, int size, Sort sort) ***
-		Pageable pageable = new PageRequest(0, 10, null);
-				
-		Page<GenreEntity> page = new PageImpl<>(genres);
-		
-		BDDMockito.when(genreRepository.findAll(pageable)).thenReturn(page);
-		ResponseEntity<String> response = restTemplate.getForEntity("/genres", String.class);
+		BDDMockito.when(genreRepository.findOne(1L)).thenReturn(genre);
+		ResponseEntity<GenreEntity> response = restTemplate.getForEntity("/genres/{genreId}", GenreEntity.class, genre.getId());
 		Assertions.assertThat(response.getStatusCodeValue()).isEqualTo(200);
 	}
 
+	@Test
+	public void getGenreDeveRetornarStatusCode404() {
+		ResponseEntity<GenreEntity> response = restTemplate.getForEntity("/genres/{genreId}", GenreEntity.class, -1);
+		Assertions.assertThat(response.getStatusCodeValue()).isEqualTo(404);
+	}
+
+	@Test
+	public void listGenresDeveRetornarStatusCode200() {
+		List<GenreEntity> genres = asList(
+				new GenreEntity(1L, "Aventura", OffsetDateTime.now(), OffsetDateTime.now()),
+				new GenreEntity(2L, "Comédia", OffsetDateTime.now(), OffsetDateTime.now()));
+		
+		// PageRequest(int page, int size, Sort sort) ***
+		Pageable pageable = new PageRequest(0, 10, null);
+		
+		Page<GenreEntity> page = new PageImpl<>(genres);
+		
+		BDDMockito.when(genreRepository.findAll(pageable)).thenReturn(page);
+		ResponseEntity<GenreEntity> response = restTemplate.getForEntity("/genres", GenreEntity.class);
+		Assertions.assertThat(response.getStatusCodeValue()).isEqualTo(200);
+	}
+
+	@Test
+	public void listGenresDeveRetornarStatusCode404() {
+		List<GenreEntity> genres = new ArrayList<GenreEntity>();
+		
+		// PageRequest(int page, int size, Sort sort) ***
+		Pageable pageable = new PageRequest(0, 10, null);
+		
+		Page<GenreEntity> page = new PageImpl<>(genres);
+		
+		BDDMockito.when(genreRepository.findAll(pageable)).thenReturn(page);
+		ResponseEntity<GenreEntity> response = restTemplate.getForEntity("/genres", GenreEntity.class);
+		Assertions.assertThat(response.getStatusCodeValue()).isEqualTo(404);
+	}
+    
 }

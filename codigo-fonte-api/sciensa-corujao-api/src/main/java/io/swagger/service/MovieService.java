@@ -41,6 +41,7 @@ public class MovieService {
 	}
 
 	public ResponseEntity<MovieEntity> delete(Long movieId) {
+		verifyIfMovieExists(movieId);
 		repository.delete(movieId);
 		return respondeMovieDeletado();
 	}

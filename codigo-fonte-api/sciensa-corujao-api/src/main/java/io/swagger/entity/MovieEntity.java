@@ -62,6 +62,14 @@ public class MovieEntity implements Serializable {
 		this.updatedAt = updatedAt;
 	}
 	
+	public MovieEntity(Long id, String title, Integer releaseYear, OffsetDateTime createdAt, OffsetDateTime updatedAt) {
+		this.id = id;
+		this.title = title;
+		this.releaseYear = releaseYear;
+		this.createdAt = createdAt;
+		this.updatedAt = updatedAt;
+	}
+	
 	@Column
 	private OffsetDateTime createdAt = null;
 

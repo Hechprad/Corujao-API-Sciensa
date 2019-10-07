@@ -50,6 +50,15 @@ public class ArtistEntity implements Serializable {
 		this.createdAt = createdAt;
 		this.updatedAt = updatedAt;
 	}
+	
+	public ArtistEntity(Long id, String firstName, String lastName, LocalDate dateOfBirth, OffsetDateTime createdAt, OffsetDateTime updatedAt) {
+		this.id = id;
+		this.firstName = firstName;
+		this.lastName = lastName;
+		this.dateOfBirth = dateOfBirth;
+		this.createdAt = createdAt;
+		this.updatedAt = updatedAt;
+	}
 
 	public Long getId() {
 		return id;

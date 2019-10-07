@@ -118,7 +118,7 @@ public class GenreService {
 
 	// Verifica se o retorno do tipo page é null na busca de todos os gêneros
 	private void verifyIfPageHasContent(Page<GenreEntity> genreEntity) {
-		if (!genreEntity.hasContent()) {
+		if (!genreEntity.hasContent() || genreEntity == null) {
 			throw new ResourceNotFoundException("Gêneros não encontrados");
 		}
 	}
