@@ -129,6 +129,7 @@ public class ArtistService {
 			if (artist.getId() == artistId)
 				filmography.add(movie);
 		}));
+		verifyIfMoviesListIsVoid(filmography, artistId);
 		return filmography;
 	}
 
@@ -160,7 +161,7 @@ public class ArtistService {
 
 	// Verifica de se a lista de filmes está vazia
 	private void verifyIfMoviesListIsVoid(List<MovieEntity> movies, Long artistId) {
-		if (movies.size() <= 0) {
+		if (movies.isEmpty()) {
 			throw new ResourceNotFoundException("Artista com ID '" + artistId + "' não possui filmografia cadastrada.");
 		}
 	}

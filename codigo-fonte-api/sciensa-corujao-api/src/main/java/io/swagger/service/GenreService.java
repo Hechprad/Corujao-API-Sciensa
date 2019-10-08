@@ -57,13 +57,12 @@ public class GenreService {
 	private GenreEntity cadastraNovoGenre(GenreEntity genreEntity) {
 		genreEntity.setCreatedAt(OffsetDateTime.now());
 		genreEntity.setUpdatedAt(OffsetDateTime.now());
-		genreEntity = repository.save(genreEntity);
+		repository.save(genreEntity);
 
 		// Verifica se o Genre foi realmente cadastrado
 		verifyIfGenreExists(genreEntity.getId());
 
 		return genreEntity;
-
 	}
 
 	// Busca todos os gêneros cadastrados
