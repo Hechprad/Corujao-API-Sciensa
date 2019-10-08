@@ -47,7 +47,7 @@ public class MovieService {
 	}
 
 	public ResponseEntity<Page<MovieEntity>> searchTitle(String search, Pageable pageable) {
-		return new ResponseEntity<Page<MovieEntity>>(buscaMoviePeloTitulo(search), HttpStatus.OK);
+		return new ResponseEntity<Page<MovieEntity>>(buscaMoviePeloTitulo(search, pageable), HttpStatus.OK);
 	}
 
 	public ResponseEntity<Page<MovieEntity>> findAll(Pageable pageable) {
@@ -84,20 +84,21 @@ public class MovieService {
 	}
 
 	// Busca Movies pelo title
-	private Page<MovieEntity> buscaMoviePeloTitulo(String search) {
+	private Page<MovieEntity> buscaMoviePeloTitulo(String search, Pageable pageable) {
 		Iterable<MovieEntity> movies = repository.findAll();
 		List<MovieEntity> moviesFiltrados = new ArrayList<MovieEntity>();
-
+		
 		movies.forEach(movie -> {
 			if (removeAcento(movie.getTitle().toLowerCase()).contains(removeAcento(search.toLowerCase())))
 				moviesFiltrados.add(movie);
 		});
-
-		// convertento List para page
-		final Page<MovieEntity> page = new PageImpl<>(moviesFiltrados);
+		
+		// convertendo List para page
+		Page<MovieEntity> page = new PageImpl<>(moviesFiltrados, pageable, moviesFiltrados.size());
 		return page;
 	}
 
+	
 	// Remove acento
 	private static String removeAcento(String str) {
 		str = Normalizer.normalize(str, Normalizer.Form.NFD);

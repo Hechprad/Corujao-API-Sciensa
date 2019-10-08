@@ -47,7 +47,7 @@ public class ArtistService {
 	}
 
 	public ResponseEntity<Page<ArtistEntity>> searchName(String search, Pageable pageable) {
-		return new ResponseEntity<Page<ArtistEntity>>(buscaArtistPeloNome(search), HttpStatus.OK);
+		return new ResponseEntity<Page<ArtistEntity>>(buscaArtistPeloNome(search, pageable), HttpStatus.OK);
 	}
 
 	public ResponseEntity<ArtistEntity> updateArtist(Long artistId, ArtistEntity artistEntity) {
@@ -84,7 +84,7 @@ public class ArtistService {
 	}
 
 	// Busca Artists pelo firstName e lastName
-	private Page<ArtistEntity> buscaArtistPeloNome(String search) {
+	private Page<ArtistEntity> buscaArtistPeloNome(String search, Pageable pageable) {
 		Iterable<ArtistEntity> artists = repository.findAll();
 
 		List<ArtistEntity> artistsFiltrados = new ArrayList<ArtistEntity>();
@@ -94,8 +94,8 @@ public class ArtistService {
 				artistsFiltrados.add(artist);
 		});
 
-		// convertento List para page
-		final Page<ArtistEntity> page = new PageImpl<>(artistsFiltrados);
+		// convertendo List para page
+		Page<ArtistEntity> page = new PageImpl<>(artistsFiltrados, pageable, artistsFiltrados.size());
 		return page;
 	}
 

@@ -42,7 +42,7 @@ public class GenreService {
 	}
 
 	public ResponseEntity<Page<GenreEntity>> searchDescription(String search, Pageable pageable) {
-		return new ResponseEntity<Page<GenreEntity>>(buscaGenrePeloTitulo(search), HttpStatus.OK);
+		return new ResponseEntity<Page<GenreEntity>>(buscaGenrePeloTitulo(search, pageable), HttpStatus.OK);
 	}
 
 	public ResponseEntity<GenreEntity> updateGenre(Long genreId, GenreEntity genreEntity) {
@@ -72,7 +72,7 @@ public class GenreService {
 	}
 
 	// Busca Genre pela Desription
-	private Page<GenreEntity> buscaGenrePeloTitulo(String search) {
+	private Page<GenreEntity> buscaGenrePeloTitulo(String search, Pageable pageable) {
 		Iterable<GenreEntity> genres = repository.findAll();
 		List<GenreEntity> genresFiltrados = new ArrayList<GenreEntity>();
 
@@ -81,8 +81,8 @@ public class GenreService {
 				genresFiltrados.add(genre);
 		});
 
-		// convertento List para page
-		final Page<GenreEntity> page = new PageImpl<>(genresFiltrados);
+		// convertendo List para page
+		Page<GenreEntity> page = new PageImpl<>(genresFiltrados, pageable, genresFiltrados.size());
 		return page;
 	}
 
