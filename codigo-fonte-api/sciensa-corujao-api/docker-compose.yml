@@ -13,11 +13,11 @@ services:
          - POSTGRES_DB=movies_db
     restart: unless-stopped
   corujao:
-    image: teste1_com_postgre
+    image: corujao_api
     build:
       context: . 
       dockerfile: Dockerfile
-    container_name: corujao_teste
+    container_name: corujao_api_container
     ports:
       - 5000:5000
     restart: unless-stopped
