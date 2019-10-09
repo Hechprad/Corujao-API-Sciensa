@@ -13,6 +13,8 @@ A API cadastra e realiza buscas de gêneros, artistas e filmes.
     - Java
     - Maven
     - Postgres
+        - Se quiser, rode o seguinte comando para subir um container com postgresql:
+            - docker run --name postgres_eclipse -e POSTGRES_PASSWORD=admin -e POSTGRES_USER=postgres  -e POSTGRES_DB=movies_db -d -p 5432:5432 postgres
 
 ***
 ### 📌Getting Started
