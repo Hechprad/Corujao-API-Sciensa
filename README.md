@@ -67,13 +67,42 @@ A API cadastra e realiza buscas de gêneros, artistas e filmes.
   - Filmes:
       - Post:
           - Cadastra um filme - http://localhost:5000/v1/movies
-              - Exemplo json para cadastro:
+          - Exemplo json para cadastro:
+              - {"releaseYear": 2001,"title": "O Senhor dos Anéis: A Sociedade do Anel"}
       - Get:
           - Retorna uma lista todos os filmes cadastrados - http://localhost:5000/v1/movies
           - Retorna um filme pelo id - http://localhost:5000/v1/gmovies/{id}
       - Put:
+          - Atualiza um filme cadastrado - http://localhost:5000/v1/artists/{id}
+          - Exemplo de json para atualização:
+               - {"releaseYear": 2000,"title": "Harry Potter","genres":[{"id":1},{"id":2}],"cast":[{"id":1},{"id":2}],"director": {"id":3}}
       - Delete:
-      
+          - Deleta um filme com o id cadastrado - http://localhost:5000/v1/movies/{id}
+
+📌*NOTA 1:*
+- Diretor, lista de gêneros e lista de atores (cast), se já estiverem cadastrados no banco de dados podem ser adicionados na hora do cadastro do filme.
+    
+```
+EXEMPLO:
+{
+    "releaseYear": 2001,
+    "title": "O Senhor dos Anéis: A Sociedade do Anel",
+    "genres":[{"id":1},{"id":2},{"id":3}],
+    "cast":[{"id":1},{"id":2}],
+    "director": {"id":3}
+}
+```
+
+📌*NOTA 2:*
+- Nos endpoints que retornam uma lista é possivel passar query params:
+    - qual página acessar começando da página 0: "**page=0**"
+    - quantidade de elementos em cada páginas: "**size=3**"
+    - ordenação crescente ou decrescente por atributo da entidade: "**sort=description,desc**" 
+    - filtragem:
+        - Campo "description" de Gênero: "**search=Harry**"
+        - Campo "firstName lastName" de Artista: "**search=Elijah**"
+        - Campo "title" de Gênero: "**search=Fantasia**"
+
 ### 📌Built With
 
  - Java
