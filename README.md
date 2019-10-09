@@ -8,6 +8,7 @@ A API cadastra e realiza buscas de gêneros, artistas e filmes.
 
 - Para execução com Docker:
     - Docker
+
 - Para execução local com uma IDE:
     - Java
     - Maven
@@ -17,14 +18,17 @@ A API cadastra e realiza buscas de gêneros, artistas e filmes.
 ### 📌Getting Started
 
 - Clone ou faça o download deste repositório:
+
 - Com Docker
     - Acesse codigo-fonte-api\sciensa-corujao-api\src\main\resources e mude o comentário para acesso ao banco de dados com Docker.
     - Execute no terminal:
       - cd codigo-fonte-api\sciensa-corujao-api
       - docker-compose up
+      
  - Com IDE (Possível realizar a execução de testes):
    - Importe o projeto.
    - Crie o banco de dados 'movies_db' no postgres.
+   
  - Caso queira gerar um novo arquivo '.jar': 
    - pelo terminal acesse o diretório 'sciensa-corujao-api' que possue o pom.xml e execute o maven:
    - mvn clean package
@@ -41,19 +45,34 @@ A API cadastra e realiza buscas de gêneros, artistas e filmes.
           - Exemplo de json para cadastro: 
               - {"description": "Ficção"}
       - Get:
-          - Retorna todos os gêneros - http://localhost:5000/v1/genres
+          - Retorna uma lista todos os gêneros cadastrados - http://localhost:5000/v1/genres
           - Retorna um gênero pelo id - http://localhost:5000/v1/genres/{id}
       - Put:
           - Atualiza um gênero cadastrado - http://localhost:5000/v1/genres/{id}
-          - Exemplo de json para cadastro: 
+          - Exemplo de json para atualização: 
               - {"description": "Animação"}
   - Artistas:
       - Post:
-          - http://localhost:5000/v1/artists
+          - Cadastra um artista - http://localhost:5000/v1/artists
+          - Exemplo json para cadastro:
+              - {"dateOfBirth": "1939-05-25","firstName": "Ian","lastName": "McKellen"}
+      - Get:
+          - Retorna uma lista com todos os artistas cadastrados - http://localhost:5000/v1/artists
+          - Retorna um artista pelo id - http://localhost:5000/v1/artists/{id}
+          - Retorna a filmografia de um artista pelo id - http://localhost:5000/v1/artists/{id}/filmography
+      - Put:
+          - Atualiza um artista cadastrado - http://localhost:5000/v1/artists/{id}
+          - Exemplo de json para atualização: 
+              - {"dateOfBirth": "1981-01-28","firstName": "Elijah","lastName": "Wood"}
+  - Filmes:
+      - Post:
+          - Cadastra um filme - http://localhost:5000/v1/movies
               - Exemplo json para cadastro:
       - Get:
+          - Retorna uma lista todos os filmes cadastrados - http://localhost:5000/v1/movies
+          - Retorna um filme pelo id - http://localhost:5000/v1/gmovies/{id}
       - Put:
-  - Filmes:
+      - Delete:
       
 ### 📌Built With
 
@@ -69,8 +88,7 @@ A API cadastra e realiza buscas de gêneros, artistas e filmes.
 
  - [Jorge Hecherat](https://github.com/Hechprad)
 
-
-
+***
 # Sciensa: Teste de desenvolvedor back-end
 
 Neste teste, avaliaremos a sua capacidade de implementar corretamente uma API REST.
