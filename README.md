@@ -28,6 +28,7 @@ A API cadastra e realiza buscas de gêneros, artistas e filmes.
  - Com IDE (Possível realizar a execução de testes):
    - Importe o projeto.
    - Crie o banco de dados 'movies_db' no postgres.
+   - Execute a classe Swagger2SpringBoot.java
    
  - Caso queira gerar um novo arquivo '.jar': 
    - pelo terminal acesse o diretório 'sciensa-corujao-api' que possue o pom.xml e execute o maven:
